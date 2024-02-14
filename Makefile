@@ -20,7 +20,7 @@ DEV_IMAGE ?= false
 
 # E2E variables
 E2E_INSTANCE_ID ?= argo-rollouts-e2e
-E2E_TEST_OPTIONS ?= 
+E2E_TEST_OPTIONS ?=
 E2E_PARALLEL ?= 1
 E2E_WAIT_TIMEOUT ?= 120
 GOPATH ?= $(shell go env GOPATH)
@@ -290,3 +290,7 @@ build-sample-metric-plugin-debug:
 build-sample-traffic-plugin-debug:
 	go build -gcflags="all=-N -l" -o traffic-plugin test/cmd/sample-trafficrouter-plugin/main.go
 
+
+.PHONY: controller-fips
+controller-fips:
+	go build -v -ldflags '${LDFLAGS}' -o ${DIST_DIR}/rollouts-controller ./cmd/rollouts-controller
