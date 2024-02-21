@@ -293,4 +293,8 @@ build-sample-traffic-plugin-debug:
 
 .PHONY: controller-fips
 controller-fips:
-	go build -v -ldflags '${LDFLAGS}' -o ${DIST_DIR}/rollouts-controller ./cmd/rollouts-controller
+	GOEXPERIMENT=boringcrypto CGO_ENABLED=1 go build -v -ldflags '${LDFLAGS}' -o ${DIST_DIR}/rollouts-controller ./cmd/rollouts-controller
+
+.PHONY: check-fips
+check-fips: controller-fips
+	go tool nm ${DIST_DIR}/rollouts-controller | grep "_Cfunc__goboringcrypto_" || (echo "CGO boringcrypto could not be detected in the go application binary" && exit 1)
