@@ -6,15 +6,15 @@ service: argo-rollouts
 # Validate the formatting of the pipeline.yaml file.
 validate_config: true
 
-#environment_image:
-#  file: ".acquia/Dockerfile.ci"
-#  context: "."
-#  build_args:
-#    - secrets:
-#      - type: vault
-#        key: SSH_KEY
-#        value: GIT_SSH_KEY
-#        path: secret/pipeline-default/GIT_SSH_KEY
+environment_image:
+  file: ".acquia/Dockerfile.ci"
+  context: "."
+  build_args:
+    - secrets:
+      - type: vault
+        key: SSH_KEY
+        value: GIT_SSH_KEY
+        path: secret/pipeline-default/GIT_SSH_KEY
 
 pre_build:
   security_composition_analysis:
