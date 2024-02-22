@@ -290,11 +290,17 @@ build-sample-metric-plugin-debug:
 build-sample-traffic-plugin-debug:
 	go build -gcflags="all=-N -l" -o traffic-plugin test/cmd/sample-trafficrouter-plugin/main.go
 
+IMAGE_TAG=fips-v1.5.1
+
+.PHONY: build-fips
+build-fips:
+	DOCKER_BUILDKIT=1 docker build --platform=linux/amd64 -t argo-rollouts:$(IMAGE_TAG) -f Dockerfile-FIPS .
 
 .PHONY: controller-fips
 controller-fips:
 	GOEXPERIMENT=boringcrypto CGO_ENABLED=1 go build -v -ldflags '${LDFLAGS}' -o ${DIST_DIR}/rollouts-controller ./cmd/rollouts-controller
 
+# Note: This target might not work as expected on arm64 architecture.
 .PHONY: check-fips
 check-fips: controller-fips
 	go tool nm ${DIST_DIR}/rollouts-controller | grep "_Cfunc__goboringcrypto_" || (echo "CGO boringcrypto could not be detected in the go application binary" && exit 1)

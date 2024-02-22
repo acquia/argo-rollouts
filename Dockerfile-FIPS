@@ -1,4 +1,4 @@
-FROM jfrog.ais.acquia.io/devops-pipeline/acq-aws as argo-rollouts-build
+FROM jfrog.ais.acquia.io/devops-pipeline/acq-aws as argo-rollouts-builder
 
 # Update packages
 USER root
@@ -50,8 +50,12 @@ COPY . .
 ARG MAKE_TARGET="controller-fips"
 RUN GOOS=$TARGETOS GOARCH=$TARGETARCH make ${MAKE_TARGET}
 
-USER 999
+#####################################################################################################
+## Final image
+#####################################################################################################
+FROM jfrog.ais.acquia.io/devops-pipeline/acq-aws
+COPY --from=argo-rollouts-builder /go/src/github.com/argoproj/argo-rollouts/dist/rollouts-controller /bin/
 
-WORKDIR /home/argo-rollouts
+USER 999
 
 ENTRYPOINT [ "/bin/rollouts-controller" ]
