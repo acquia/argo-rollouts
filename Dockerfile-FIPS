@@ -46,7 +46,7 @@ RUN GOOS=$TARGETOS GOARCH=$TARGETARCH make ${MAKE_TARGET}
 #####################################################################################################
 ## Final image
 #####################################################################################################
-FROM jfrog.ais.acquia.io/devops-pipeline/acq-aws
+FROM jfrog.ais.acquia.io/devops-pipeline/acq-aws:2
 COPY --from=argo-rollouts-builder /go/src/github.com/argoproj/argo-rollouts/dist/rollouts-controller /bin/
 
 USER 999
