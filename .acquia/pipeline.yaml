@@ -38,6 +38,7 @@ build:
             key: SSH_KEY
             value: GIT_SSH_KEY
             path: secret/pipeline-default/GIT_SSH_KEY
+
 security_scan:
   scanner: orca
   ignore_failures: false

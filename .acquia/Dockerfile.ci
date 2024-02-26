@@ -1,5 +1,41 @@
-ARG REPO_LOCATION
-ARG BASE_IMAGE=golang:1.20.2
-FROM ${REPO_LOCATION}${BASE_IMAGE} as build
+FROM jfrog.ais.acquia.io/devops-pipeline/acq-aws:2 as fips-golang-builder
 
-RUN apt-get update -y
+# Update packages
+USER root
+RUN yum makecache \
+  && yum update -y \
+  && yum install -y tar gcc git curl \
+  && yum clean all \
+  && rm -rf /var/cache/yum
+
+ARG TARGETOS=linux
+ARG TARGETARCH=amd64
+
+# Install Go
+ARG GOLANG_VERSION=1.20
+RUN curl -LO "https://go.dev/dl/go${GOLANG_VERSION}.${TARGETOS}-${TARGETARCH}.tar.gz" && \
+  tar -C /usr/local -xzf "go${GOLANG_VERSION}.${TARGETOS}-${TARGETARCH}.tar.gz" && \
+  rm -f "go${GOLANG_VERSION}.${TARGETOS}-${TARGETARCH}.tar.gz" && \
+  ls -la /usr/local/go/bin && \
+  chmod +x /usr/local/go/bin/go
+
+# Set Golang environment variables
+ENV GOPATH="/go"
+ENV GOROOT="/usr/local/go"
+ENV GOBIN="${GOPATH}/bin"
+ENV GO111MODULE="on"
+ENV GOOS=${TARGETOS}
+ENV GOARCH=${TARGETARCH}
+ENV GOPRIVATE=github.com/acquia
+
+# FIPS
+ENV GOEXPERIMENT=boringcrypto
+ENV CGO_ENABLED=1
+
+# Add path to go binaries
+ENV PATH="${PATH}:${GOROOT}/bin:${GOBIN}"
+
+WORKDIR /argo-rollouts
+
+# Perform the build
+COPY . .
