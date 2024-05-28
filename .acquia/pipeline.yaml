@@ -40,3 +40,4 @@ security_scan:
   scanner: orca
   ignore_failures: true
   reason: This service is only used for building base FIPS complaint image
+
