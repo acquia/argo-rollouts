@@ -12,7 +12,7 @@ ARG TARGETOS=linux
 ARG TARGETARCH=amd64
 
 # Install Go
-ARG GOLANG_VERSION=1.21
+ARG GOLANG_VERSION=1.21.0
 RUN curl -LO "https://go.dev/dl/go${GOLANG_VERSION}.${TARGETOS}-${TARGETARCH}.tar.gz" && \
   tar -C /usr/local -xzf "go${GOLANG_VERSION}.${TARGETOS}-${TARGETARCH}.tar.gz" && \
   rm -f "go${GOLANG_VERSION}.${TARGETOS}-${TARGETARCH}.tar.gz" && \
