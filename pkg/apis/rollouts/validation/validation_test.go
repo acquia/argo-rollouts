@@ -290,6 +290,21 @@ func TestValidateRolloutStrategyCanary(t *testing.T) {
 		assert.Empty(t, allErrs)
 	})
 
+	t.Run("valid Istio with ping pong", func(t *testing.T) {
+		validRo := ro.DeepCopy()
+		validRo.Spec.Strategy.Canary.Steps[0].SetWeight = pointer.Int32(10)
+		validRo.Spec.Strategy.Canary.CanaryService = ""
+		validRo.Spec.Strategy.Canary.StableService = ""
+		validRo.Spec.Strategy.Canary.PingPong = &v1alpha1.PingPongSpec{
+			PingService: "ping",
+			PongService: "pong",
+		}
+		validRo.Spec.Strategy.Canary.TrafficRouting.Istio = &v1alpha1.IstioTrafficRouting{DestinationRule: &v1alpha1.IstioDestinationRule{Name: "destination-rule"}}
+		validRo.Spec.Strategy.Canary.TrafficRouting.ALB = nil
+		allErrs := ValidateRolloutStrategyCanary(validRo, field.NewPath(""))
+		assert.Empty(t, allErrs)
+	})
+
 	t.Run("valid PingPong missing canary and stable service", func(t *testing.T) {
 		validRo := ro.DeepCopy()
 		validRo.Spec.Strategy.Canary.Steps[0].SetWeight = pointer.Int32(10)
@@ -368,7 +383,7 @@ func TestValidateRolloutStrategyCanary(t *testing.T) {
 			Nginx: &v1alpha1.NginxTrafficRouting{StableIngress: "stable-ingress"},
 		}
 		allErrs := ValidateRolloutStrategyCanary(invalidRo, field.NewPath(""))
-		assert.Equal(t, PingPongWithAlbOnlyMessage, allErrs[0].Detail)
+		assert.Equal(t, PingPongWithRouterOnlyMessage, allErrs[0].Detail)
 	})
 
 	t.Run("invalid traffic routing", func(t *testing.T) {
@@ -397,7 +412,59 @@ func TestValidateRolloutStrategyCanary(t *testing.T) {
 		invalidRo := ro.DeepCopy()
 		invalidRo.Spec.Strategy.Canary.Steps[0].SetWeight = &setWeight
 		allErrs := ValidateRolloutStrategyCanary(invalidRo, field.NewPath(""))
-		assert.Equal(t, InvalidSetWeightMessage, allErrs[0].Detail)
+		assert.Equal(t, fmt.Sprintf(InvalidSetWeightMessage, 100), allErrs[0].Detail)
+	})
+
+	t.Run("only nginx/plugins support max weight value", func(t *testing.T) {
+		anyWeight := int32(1)
+
+		type testCases struct {
+			trafficRouting *v1alpha1.RolloutTrafficRouting
+			expectError    bool
+			expectedError  string
+		}
+
+		testCasesList := []testCases{
+			{
+				trafficRouting: &v1alpha1.RolloutTrafficRouting{
+					ALB:              &v1alpha1.ALBTrafficRouting{RootService: "root-service"},
+					MaxTrafficWeight: &anyWeight,
+				},
+				expectError:   true,
+				expectedError: InvalidCanaryMaxWeightOnlySupportInNginxAndPlugins,
+			},
+			{
+				trafficRouting: &v1alpha1.RolloutTrafficRouting{
+					Nginx: &v1alpha1.NginxTrafficRouting{
+						StableIngress: "stable-ingress",
+					},
+					MaxTrafficWeight: &anyWeight,
+				},
+				expectError: false,
+			},
+			{
+				trafficRouting: &v1alpha1.RolloutTrafficRouting{
+					Plugins: map[string]json.RawMessage{
+						"anyplugin": []byte(`{"key": "value"}`),
+					},
+					MaxTrafficWeight: &anyWeight,
+				},
+				expectError: false,
+			},
+		}
+
+		for _, testCase := range testCasesList {
+			invalidRo := ro.DeepCopy()
+			invalidRo.Spec.Strategy.Canary.Steps[0].SetWeight = &anyWeight
+			invalidRo.Spec.Strategy.Canary.TrafficRouting = testCase.trafficRouting
+			allErrs := ValidateRolloutStrategyCanary(invalidRo, field.NewPath(""))
+			if !testCase.expectError {
+				assert.Empty(t, allErrs)
+				continue
+			}
+
+			assert.Equal(t, testCase.expectedError, allErrs[0].Detail)
+		}
 	})
 
 	t.Run("invalid duration set in paused step", func(t *testing.T) {

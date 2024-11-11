@@ -26,6 +26,7 @@ import (
 	"github.com/argoproj/argo-rollouts/utils/record"
 	replicasetutil "github.com/argoproj/argo-rollouts/utils/replicaset"
 	rolloututil "github.com/argoproj/argo-rollouts/utils/rollout"
+	"github.com/argoproj/argo-rollouts/utils/weightutil"
 )
 
 // NewTrafficRoutingReconciler identifies return the TrafficRouting Plugin that the rollout wants to modify
@@ -132,6 +133,7 @@ func (c *Controller) NewTrafficRoutingReconciler(roCtx *rolloutContext) ([]traff
 	return nil, nil
 }
 
+// this currently only be used in the canary strategy
 func (c *rolloutContext) reconcileTrafficRouting() error {
 	reconcilers, err := c.newTrafficRoutingReconciler(c)
 	// a return here does ensure that all trafficReconcilers are healthy
@@ -201,7 +203,7 @@ func (c *rolloutContext) reconcileTrafficRouting() error {
 			// But we can only increase canary weight according to available replica counts of the canary.
 			// we will need to set the desiredWeight to 0 when the newRS is not available.
 			if c.rollout.Spec.Strategy.Canary.DynamicStableScale {
-				desiredWeight = (100 * c.newRS.Status.AvailableReplicas) / *c.rollout.Spec.Replicas
+				desiredWeight = (weightutil.MaxTrafficWeight(c.rollout) * c.newRS.Status.AvailableReplicas) / *c.rollout.Spec.Replicas
 			} else if c.rollout.Status.Canary.Weights != nil {
 				desiredWeight = c.rollout.Status.Canary.Weights.Canary.Weight
 			}
@@ -229,7 +231,7 @@ func (c *rolloutContext) reconcileTrafficRouting() error {
 				desiredWeight = replicasetutil.GetCurrentSetWeight(c.rollout)
 				weightDestinations = append(weightDestinations, c.calculateWeightDestinationsFromExperiment()...)
 			} else {
-				desiredWeight = 100
+				desiredWeight = weightutil.MaxTrafficWeight(c.rollout)
 			}
 		}
 		// We need to check for revision > 1 because when we first install the rollout we run step 0 this prevents that.
@@ -286,6 +288,12 @@ func (c *rolloutContext) reconcileTrafficRouting() error {
 			} else {
 				c.log.Infof("Desired weight (stepIdx: %s) %d not yet verified", indexString, desiredWeight)
 				c.enqueueRolloutAfter(c.rollout, defaults.GetRolloutVerifyRetryInterval())
+				// At the end of the rollout we need to verify the weight is correct, and return an error if not because we don't want the rest of the
+				// reconcile process to continue. We don't need to do this if we are in the middle of the rollout because the rest of the reconcile
+				// process won't scale down the old replicasets yet due to being in the middle of some steps.
+				if desiredWeight == weightutil.MaxTrafficWeight(c.rollout) && len(c.rollout.Spec.Strategy.Canary.Steps) >= int(*c.rollout.Status.CurrentStepIndex) {
+					return fmt.Errorf("end of rollout, desired weight %d not yet verified", desiredWeight)
+				}
 			}
 		}
 	}
@@ -303,7 +311,7 @@ func (c *rolloutContext) calculateDesiredWeightOnAbortOrStableRollback() int32 {
 	}
 	// When using dynamic stable scaling, we must dynamically decreasing the weight to the canary
 	// according to the availability of the stable (whatever it can support).
-	desiredWeight := 100 - ((100 * c.stableRS.Status.AvailableReplicas) / *c.rollout.Spec.Replicas)
+	desiredWeight := maxInt(0, weightutil.MaxTrafficWeight(c.rollout)-((weightutil.MaxTrafficWeight(c.rollout)*c.stableRS.Status.AvailableReplicas) / *c.rollout.Spec.Replicas))
 	if c.rollout.Status.Canary.Weights != nil {
 		// This ensures that if we are already at a lower weight, then we will not
 		// increase the weight because stable availability is flapping (e.g. pod restarts)
@@ -336,7 +344,7 @@ func calculateWeightStatus(ro *v1alpha1.Rollout, canaryHash, stableHash string, 
 			ServiceName:     ro.Spec.Strategy.Canary.CanaryService,
 		},
 	}
-	stableWeight := 100 - desiredWeight
+	stableWeight := weightutil.MaxTrafficWeight(ro) - desiredWeight
 	for _, weightDest := range weightDestinations {
 		weights.Additional = append(weights.Additional, weightDest)
 		stableWeight -= weightDest.Weight

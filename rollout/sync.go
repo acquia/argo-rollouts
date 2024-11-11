@@ -83,17 +83,13 @@ func (c *rolloutContext) syncReplicaSetRevision() (*appsv1.ReplicaSet, error) {
 	affinityNeedsUpdate := replicasetutil.IfInjectedAntiAffinityRuleNeedsUpdate(rsCopy.Spec.Template.Spec.Affinity, *c.rollout)
 
 	if annotationsUpdated || minReadySecondsNeedsUpdate || affinityNeedsUpdate {
+
 		rsCopy.Spec.MinReadySeconds = c.rollout.Spec.MinReadySeconds
 		rsCopy.Spec.Template.Spec.Affinity = replicasetutil.GenerateReplicaSetAffinity(*c.rollout)
-		rs, err := c.kubeclientset.AppsV1().ReplicaSets(rsCopy.ObjectMeta.Namespace).Update(ctx, rsCopy, metav1.UpdateOptions{})
+
+		rs, err := c.updateReplicaSetFallbackToPatch(ctx, rsCopy)
 		if err != nil {
-			c.log.WithError(err).Error("Error: updating replicaset revision")
-			return nil, fmt.Errorf("error updating replicaset revision: %v", err)
-		}
-		c.log.Infof("Synced revision on ReplicaSet '%s' to '%s'", rs.Name, newRevision)
-		err = c.replicaSetInformer.GetIndexer().Update(rs)
-		if err != nil {
-			return nil, fmt.Errorf("error updating replicaset informer in syncReplicaSetRevision: %w", err)
+			return nil, fmt.Errorf("failed to update replicaset revision on %s: %w", rsCopy.Name, err)
 		}
 		return rs, nil
 	}
@@ -113,7 +109,7 @@ func (c *rolloutContext) syncReplicaSetRevision() (*appsv1.ReplicaSet, error) {
 		conditions.SetRolloutCondition(&c.rollout.Status, *condition)
 		updatedRollout, err := c.argoprojclientset.ArgoprojV1alpha1().Rollouts(c.rollout.Namespace).UpdateStatus(ctx, c.rollout, metav1.UpdateOptions{})
 		if err != nil {
-			c.log.WithError(err).Error("Error: updating rollout revision")
+			c.log.WithError(err).Error("Error: updating rollout status in syncReplicaSetRevision")
 			return nil, err
 		}
 		c.rollout = updatedRollout
@@ -245,7 +241,7 @@ func (c *rolloutContext) createDesiredReplicaSet() (*appsv1.ReplicaSet, error) {
 		cond := conditions.NewRolloutCondition(v1alpha1.RolloutProgressing, corev1.ConditionFalse, conditions.FailedRSCreateReason, msg)
 		patchErr := c.patchCondition(c.rollout, newStatus, cond)
 		if patchErr != nil {
-			c.log.Warnf("Error Patching Rollout: %s", patchErr.Error())
+			c.log.Warnf("Error Patching Rollout Conditions: %s", patchErr.Error())
 		}
 		return nil, err
 	default:
@@ -370,25 +366,21 @@ func (c *rolloutContext) scaleReplicaSet(rs *appsv1.ReplicaSet, newScale int32, 
 	rolloutReplicas := defaults.GetReplicasOrDefault(rollout.Spec.Replicas)
 	annotationsNeedUpdate := annotations.ReplicasAnnotationsNeedUpdate(rs, rolloutReplicas)
 
-	scaled := false
 	var err error
+	scaled := false
 	if sizeNeedsUpdate || annotationsNeedUpdate {
 		rsCopy := rs.DeepCopy()
 		oldScale := defaults.GetReplicasOrDefault(rs.Spec.Replicas)
 		*(rsCopy.Spec.Replicas) = newScale
 		annotations.SetReplicasAnnotations(rsCopy, rolloutReplicas)
 		if fullScaleDown && !c.shouldDelayScaleDownOnAbort() {
+			// This bypasses the normal call to removeScaleDownDelay and then depends on the removal via an update in updateReplicaSetFallbackToPatch
 			delete(rsCopy.Annotations, v1alpha1.DefaultReplicaSetScaleDownDeadlineAnnotationKey)
 		}
 
-		rs, err = c.kubeclientset.AppsV1().ReplicaSets(rsCopy.Namespace).Update(ctx, rsCopy, metav1.UpdateOptions{})
+		rs, err = c.updateReplicaSetFallbackToPatch(ctx, rsCopy)
 		if err != nil {
-			return scaled, rs, fmt.Errorf("error updating replicaset %s: %w", rsCopy.Name, err)
-		}
-		err = c.replicaSetInformer.GetIndexer().Update(rs)
-		if err != nil {
-			err = fmt.Errorf("error updating replicaset informer in scaleReplicaSet: %w", err)
-			return scaled, rs, err
+			return scaled, rs, fmt.Errorf("failed to updateReplicaSetFallbackToPatch in scaleReplicaSet: %w", err)
 		}
 
 		if sizeNeedsUpdate {
@@ -578,6 +570,19 @@ func isIndefiniteStep(r *v1alpha1.Rollout) bool {
 	return false
 }
 
+// isWaitingForReplicaSetScaleDown returns whether or not the rollout still has other replica sets with a scale down deadline annotation
+func isWaitingForReplicaSetScaleDown(r *v1alpha1.Rollout, newRS, stableRS *appsv1.ReplicaSet, allRSs []*appsv1.ReplicaSet) bool {
+	otherRSs := replicasetutil.GetOtherRSs(r, newRS, stableRS, allRSs)
+
+	for _, rs := range otherRSs {
+		if replicasetutil.HasScaleDownDeadline(rs) {
+			return true
+		}
+	}
+
+	return false
+}
+
 func (c *rolloutContext) calculateRolloutConditions(newStatus v1alpha1.RolloutStatus) v1alpha1.RolloutStatus {
 	isPaused := len(c.rollout.Status.PauseConditions) > 0 || c.rollout.Spec.Paused
 	isAborted := c.pauseContext.IsAborted()
@@ -663,7 +668,8 @@ func (c *rolloutContext) calculateRolloutConditions(newStatus v1alpha1.RolloutSt
 				conditions.RemoveRolloutCondition(&newStatus, v1alpha1.RolloutProgressing)
 			}
 			conditions.SetRolloutCondition(&newStatus, *condition)
-		case !isIndefiniteStep(c.rollout) && conditions.RolloutTimedOut(c.rollout, &newStatus):
+		case !isIndefiniteStep(c.rollout) && !isWaitingForReplicaSetScaleDown(c.rollout, c.newRS, c.stableRS, c.allRSs) && conditions.RolloutTimedOut(c.rollout, &newStatus):
+
 			// Update the rollout with a timeout condition. If the condition already exists,
 			// we ignore this update.
 			msg := fmt.Sprintf(conditions.RolloutTimeOutMessage, c.rollout.Name)

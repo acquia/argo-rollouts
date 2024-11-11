@@ -1,6 +1,7 @@
 ## Who uses Argo Rollouts?
 Organizations below are **officially** using Argo Rollouts. Please send a PR with your organization name if you are using Argo Rollouts.
 
+1. [Ada](https://www.ada.cx)
 1. [ADP](https://www.adp.com)
 1. [Akuity](https://akuity.io/)
 1. [Alibaba Group](https://www.alibabagroup.com/)
@@ -15,10 +16,12 @@ Organizations below are **officially** using Argo Rollouts. Please send a PR wit
 1. [DaoCloud](https://daocloud.io)
 1. [Databricks](https://github.com/databricks)
 1. [Devtron Labs](https://github.com/devtron-labs/devtron)
+1. [Factorial](https://factorialhr.com)
 1. [Farfetch](https://www.farfetch.com/)
 1. [Flipkart](https://flipkart.com)
 1. [GetYourGuide](https://www.getyourguide.com)
 1. [Gllue](https://gllue.com)
+1. [HashiCorp](https://www.hashicorp.com/)
 1. [Ibotta](https://home.ibotta.com/)
 1. [Intuit](https://www.intuit.com/)
 1. [New Relic](https://newrelic.com/)
@@ -48,4 +51,4 @@ Organizations below are **officially** using Argo Rollouts. Please send a PR wit
 1. [WeLab Bank](https://www.welab.bank/)
 1. [Yotpo](https://www.yotpo.com/)
 1. [VGS](https://www.vgs.io)
-1. [HashiCorp](https://www.hashicorp.com/)
+2. [Groww](https://groww.in/)

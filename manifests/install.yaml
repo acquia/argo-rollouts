@@ -180,7 +180,6 @@ spec:
                         datadog:
                           properties:
                             aggregator:
-                              default: last
                               enum:
                               - avg
                               - min
@@ -245,6 +244,9 @@ spec:
                                 backoffLimit:
                                   format: int32
                                   type: integer
+                                backoffLimitPerIndex:
+                                  format: int32
+                                  type: integer
                                 completionMode:
                                   type: string
                                 completions:
@@ -252,6 +254,9 @@ spec:
                                   type: integer
                                 manualSelector:
                                   type: boolean
+                                maxFailedIndexes:
+                                  format: int32
+                                  type: integer
                                 parallelism:
                                   format: int32
                                   type: integer
@@ -299,6 +304,8 @@ spec:
                                   required:
                                   - rules
                                   type: object
+                                podReplacementPolicy:
+                                  type: string
                                 selector:
                                   properties:
                                     matchExpressions:
@@ -470,6 +477,16 @@ spec:
                                                                 type: object
                                                             type: object
                                                             x-kubernetes-map-type: atomic
+                                                          matchLabelKeys:
+                                                            items:
+                                                              type: string
+                                                            type: array
+                                                            x-kubernetes-list-type: atomic
+                                                          mismatchLabelKeys:
+                                                            items:
+                                                              type: string
+                                                            type: array
+                                                            x-kubernetes-list-type: atomic
                                                           namespaceSelector:
                                                             properties:
                                                               matchExpressions:
@@ -538,6 +555,16 @@ spec:
                                                             type: object
                                                         type: object
                                                         x-kubernetes-map-type: atomic
+                                                      matchLabelKeys:
+                                                        items:
+                                                          type: string
+                                                        type: array
+                                                        x-kubernetes-list-type: atomic
+                                                      mismatchLabelKeys:
+                                                        items:
+                                                          type: string
+                                                        type: array
+                                                        x-kubernetes-list-type: atomic
                                                       namespaceSelector:
                                                         properties:
                                                           matchExpressions:
@@ -604,6 +631,16 @@ spec:
                                                                 type: object
                                                             type: object
                                                             x-kubernetes-map-type: atomic
+                                                          matchLabelKeys:
+                                                            items:
+                                                              type: string
+                                                            type: array
+                                                            x-kubernetes-list-type: atomic
+                                                          mismatchLabelKeys:
+                                                            items:
+                                                              type: string
+                                                            type: array
+                                                            x-kubernetes-list-type: atomic
                                                           namespaceSelector:
                                                             properties:
                                                               matchExpressions:
@@ -672,6 +709,16 @@ spec:
                                                             type: object
                                                         type: object
                                                         x-kubernetes-map-type: atomic
+                                                      matchLabelKeys:
+                                                        items:
+                                                          type: string
+                                                        type: array
+                                                        x-kubernetes-list-type: atomic
+                                                      mismatchLabelKeys:
+                                                        items:
+                                                          type: string
+                                                        type: array
+                                                        x-kubernetes-list-type: atomic
                                                       namespaceSelector:
                                                         properties:
                                                           matchExpressions:
@@ -851,6 +898,14 @@ spec:
                                                         required:
                                                         - port
                                                         type: object
+                                                      sleep:
+                                                        properties:
+                                                          seconds:
+                                                            format: int64
+                                                            type: integer
+                                                        required:
+                                                        - seconds
+                                                        type: object
                                                       tcpSocket:
                                                         properties:
                                                           host:
@@ -900,6 +955,14 @@ spec:
                                                             type: string
                                                         required:
                                                         - port
+                                                        type: object
+                                                      sleep:
+                                                        properties:
+                                                          seconds:
+                                                            format: int64
+                                                            type: integer
+                                                        required:
+                                                        - seconds
                                                         type: object
                                                       tcpSocket:
                                                         properties:
@@ -1097,6 +1160,19 @@ spec:
                                                     format: int32
                                                     type: integer
                                                 type: object
+                                              resizePolicy:
+                                                items:
+                                                  properties:
+                                                    resourceName:
+                                                      type: string
+                                                    restartPolicy:
+                                                      type: string
+                                                  required:
+                                                  - resourceName
+                                                  - restartPolicy
+                                                  type: object
+                                                type: array
+                                                x-kubernetes-list-type: atomic
                                               resources:
                                                 properties:
                                                   claims:
@@ -1116,6 +1192,8 @@ spec:
                                                   requests:
                                                     x-kubernetes-preserve-unknown-fields: true
                                                 type: object
+                                              restartPolicy:
+                                                type: string
                                               securityContext:
                                                 properties:
                                                   allowPrivilegeEscalation:
@@ -1468,6 +1546,14 @@ spec:
                                                         required:
                                                         - port
                                                         type: object
+                                                      sleep:
+                                                        properties:
+                                                          seconds:
+                                                            format: int64
+                                                            type: integer
+                                                        required:
+                                                        - seconds
+                                                        type: object
                                                       tcpSocket:
                                                         properties:
                                                           host:
@@ -1517,6 +1603,14 @@ spec:
                                                             type: string
                                                         required:
                                                         - port
+                                                        type: object
+                                                      sleep:
+                                                        properties:
+                                                          seconds:
+                                                            format: int64
+                                                            type: integer
+                                                        required:
+                                                        - seconds
                                                         type: object
                                                       tcpSocket:
                                                         properties:
@@ -1714,6 +1808,19 @@ spec:
                                                     format: int32
                                                     type: integer
                                                 type: object
+                                              resizePolicy:
+                                                items:
+                                                  properties:
+                                                    resourceName:
+                                                      type: string
+                                                    restartPolicy:
+                                                      type: string
+                                                  required:
+                                                  - resourceName
+                                                  - restartPolicy
+                                                  type: object
+                                                type: array
+                                                x-kubernetes-list-type: atomic
                                               resources:
                                                 properties:
                                                   claims:
@@ -1733,6 +1840,8 @@ spec:
                                                   requests:
                                                     x-kubernetes-preserve-unknown-fields: true
                                                 type: object
+                                              restartPolicy:
+                                                type: string
                                               securityContext:
                                                 properties:
                                                   allowPrivilegeEscalation:
@@ -2092,6 +2201,14 @@ spec:
                                                         required:
                                                         - port
                                                         type: object
+                                                      sleep:
+                                                        properties:
+                                                          seconds:
+                                                            format: int64
+                                                            type: integer
+                                                        required:
+                                                        - seconds
+                                                        type: object
                                                       tcpSocket:
                                                         properties:
                                                           host:
@@ -2141,6 +2258,14 @@ spec:
                                                             type: string
                                                         required:
                                                         - port
+                                                        type: object
+                                                      sleep:
+                                                        properties:
+                                                          seconds:
+                                                            format: int64
+                                                            type: integer
+                                                        required:
+                                                        - seconds
                                                         type: object
                                                       tcpSocket:
                                                         properties:
@@ -2338,6 +2463,19 @@ spec:
                                                     format: int32
                                                     type: integer
                                                 type: object
+                                              resizePolicy:
+                                                items:
+                                                  properties:
+                                                    resourceName:
+                                                      type: string
+                                                    restartPolicy:
+                                                      type: string
+                                                  required:
+                                                  - resourceName
+                                                  - restartPolicy
+                                                  type: object
+                                                type: array
+                                                x-kubernetes-list-type: atomic
                                               resources:
                                                 properties:
                                                   claims:
@@ -2357,6 +2495,8 @@ spec:
                                                   requests:
                                                     x-kubernetes-preserve-unknown-fields: true
                                                 type: object
+                                              restartPolicy:
+                                                type: string
                                               securityContext:
                                                 properties:
                                                   allowPrivilegeEscalation:
@@ -3329,7 +3469,6 @@ spec:
                         datadog:
                           properties:
                             aggregator:
-                              default: last
                               enum:
                               - avg
                               - min
@@ -3394,6 +3533,9 @@ spec:
                                 backoffLimit:
                                   format: int32
                                   type: integer
+                                backoffLimitPerIndex:
+                                  format: int32
+                                  type: integer
                                 completionMode:
                                   type: string
                                 completions:
@@ -3401,6 +3543,9 @@ spec:
                                   type: integer
                                 manualSelector:
                                   type: boolean
+                                maxFailedIndexes:
+                                  format: int32
+                                  type: integer
                                 parallelism:
                                   format: int32
                                   type: integer
@@ -3448,6 +3593,8 @@ spec:
                                   required:
                                   - rules
                                   type: object
+                                podReplacementPolicy:
+                                  type: string
                                 selector:
                                   properties:
                                     matchExpressions:
@@ -3619,6 +3766,16 @@ spec:
                                                                 type: object
                                                             type: object
                                                             x-kubernetes-map-type: atomic
+                                                          matchLabelKeys:
+                                                            items:
+                                                              type: string
+                                                            type: array
+                                                            x-kubernetes-list-type: atomic
+                                                          mismatchLabelKeys:
+                                                            items:
+                                                              type: string
+                                                            type: array
+                                                            x-kubernetes-list-type: atomic
                                                           namespaceSelector:
                                                             properties:
                                                               matchExpressions:
@@ -3687,6 +3844,16 @@ spec:
                                                             type: object
                                                         type: object
                                                         x-kubernetes-map-type: atomic
+                                                      matchLabelKeys:
+                                                        items:
+                                                          type: string
+                                                        type: array
+                                                        x-kubernetes-list-type: atomic
+                                                      mismatchLabelKeys:
+                                                        items:
+                                                          type: string
+                                                        type: array
+                                                        x-kubernetes-list-type: atomic
                                                       namespaceSelector:
                                                         properties:
                                                           matchExpressions:
@@ -3753,6 +3920,16 @@ spec:
                                                                 type: object
                                                             type: object
                                                             x-kubernetes-map-type: atomic
+                                                          matchLabelKeys:
+                                                            items:
+                                                              type: string
+                                                            type: array
+                                                            x-kubernetes-list-type: atomic
+                                                          mismatchLabelKeys:
+                                                            items:
+                                                              type: string
+                                                            type: array
+                                                            x-kubernetes-list-type: atomic
                                                           namespaceSelector:
                                                             properties:
                                                               matchExpressions:
@@ -3821,6 +3998,16 @@ spec:
                                                             type: object
                                                         type: object
                                                         x-kubernetes-map-type: atomic
+                                                      matchLabelKeys:
+                                                        items:
+                                                          type: string
+                                                        type: array
+                                                        x-kubernetes-list-type: atomic
+                                                      mismatchLabelKeys:
+                                                        items:
+                                                          type: string
+                                                        type: array
+                                                        x-kubernetes-list-type: atomic
                                                       namespaceSelector:
                                                         properties:
                                                           matchExpressions:
@@ -4000,6 +4187,14 @@ spec:
                                                         required:
                                                         - port
                                                         type: object
+                                                      sleep:
+                                                        properties:
+                                                          seconds:
+                                                            format: int64
+                                                            type: integer
+                                                        required:
+                                                        - seconds
+                                                        type: object
                                                       tcpSocket:
                                                         properties:
                                                           host:
@@ -4049,6 +4244,14 @@ spec:
                                                             type: string
                                                         required:
                                                         - port
+                                                        type: object
+                                                      sleep:
+                                                        properties:
+                                                          seconds:
+                                                            format: int64
+                                                            type: integer
+                                                        required:
+                                                        - seconds
                                                         type: object
                                                       tcpSocket:
                                                         properties:
@@ -4246,6 +4449,19 @@ spec:
                                                     format: int32
                                                     type: integer
                                                 type: object
+                                              resizePolicy:
+                                                items:
+                                                  properties:
+                                                    resourceName:
+                                                      type: string
+                                                    restartPolicy:
+                                                      type: string
+                                                  required:
+                                                  - resourceName
+                                                  - restartPolicy
+                                                  type: object
+                                                type: array
+                                                x-kubernetes-list-type: atomic
                                               resources:
                                                 properties:
                                                   claims:
@@ -4265,6 +4481,8 @@ spec:
                                                   requests:
                                                     x-kubernetes-preserve-unknown-fields: true
                                                 type: object
+                                              restartPolicy:
+                                                type: string
                                               securityContext:
                                                 properties:
                                                   allowPrivilegeEscalation:
@@ -4617,6 +4835,14 @@ spec:
                                                         required:
                                                         - port
                                                         type: object
+                                                      sleep:
+                                                        properties:
+                                                          seconds:
+                                                            format: int64
+                                                            type: integer
+                                                        required:
+                                                        - seconds
+                                                        type: object
                                                       tcpSocket:
                                                         properties:
                                                           host:
@@ -4666,6 +4892,14 @@ spec:
                                                             type: string
                                                         required:
                                                         - port
+                                                        type: object
+                                                      sleep:
+                                                        properties:
+                                                          seconds:
+                                                            format: int64
+                                                            type: integer
+                                                        required:
+                                                        - seconds
                                                         type: object
                                                       tcpSocket:
                                                         properties:
@@ -4863,6 +5097,19 @@ spec:
                                                     format: int32
                                                     type: integer
                                                 type: object
+                                              resizePolicy:
+                                                items:
+                                                  properties:
+                                                    resourceName:
+                                                      type: string
+                                                    restartPolicy:
+                                                      type: string
+                                                  required:
+                                                  - resourceName
+                                                  - restartPolicy
+                                                  type: object
+                                                type: array
+                                                x-kubernetes-list-type: atomic
                                               resources:
                                                 properties:
                                                   claims:
@@ -4882,6 +5129,8 @@ spec:
                                                   requests:
                                                     x-kubernetes-preserve-unknown-fields: true
                                                 type: object
+                                              restartPolicy:
+                                                type: string
                                               securityContext:
                                                 properties:
                                                   allowPrivilegeEscalation:
@@ -5241,6 +5490,14 @@ spec:
                                                         required:
                                                         - port
                                                         type: object
+                                                      sleep:
+                                                        properties:
+                                                          seconds:
+                                                            format: int64
+                                                            type: integer
+                                                        required:
+                                                        - seconds
+                                                        type: object
                                                       tcpSocket:
                                                         properties:
                                                           host:
@@ -5290,6 +5547,14 @@ spec:
                                                             type: string
                                                         required:
                                                         - port
+                                                        type: object
+                                                      sleep:
+                                                        properties:
+                                                          seconds:
+                                                            format: int64
+                                                            type: integer
+                                                        required:
+                                                        - seconds
                                                         type: object
                                                       tcpSocket:
                                                         properties:
@@ -5487,6 +5752,19 @@ spec:
                                                     format: int32
                                                     type: integer
                                                 type: object
+                                              resizePolicy:
+                                                items:
+                                                  properties:
+                                                    resourceName:
+                                                      type: string
+                                                    restartPolicy:
+                                                      type: string
+                                                  required:
+                                                  - resourceName
+                                                  - restartPolicy
+                                                  type: object
+                                                type: array
+                                                x-kubernetes-list-type: atomic
                                               resources:
                                                 properties:
                                                   claims:
@@ -5506,6 +5784,8 @@ spec:
                                                   requests:
                                                     x-kubernetes-preserve-unknown-fields: true
                                                 type: object
+                                              restartPolicy:
+                                                type: string
                                               securityContext:
                                                 properties:
                                                   allowPrivilegeEscalation:
@@ -6162,8 +6442,15 @@ spec:
                   - provider
                   type: object
                 type: array
-            required:
-            - metrics
+              templates:
+                items:
+                  properties:
+                    clusterScope:
+                      type: boolean
+                    templateName:
+                      type: string
+                  type: object
+                type: array
             type: object
         required:
         - spec
@@ -6349,7 +6636,6 @@ spec:
                         datadog:
                           properties:
                             aggregator:
-                              default: last
                               enum:
                               - avg
                               - min
@@ -6414,6 +6700,9 @@ spec:
                                 backoffLimit:
                                   format: int32
                                   type: integer
+                                backoffLimitPerIndex:
+                                  format: int32
+                                  type: integer
                                 completionMode:
                                   type: string
                                 completions:
@@ -6421,6 +6710,9 @@ spec:
                                   type: integer
                                 manualSelector:
                                   type: boolean
+                                maxFailedIndexes:
+                                  format: int32
+                                  type: integer
                                 parallelism:
                                   format: int32
                                   type: integer
@@ -6468,6 +6760,8 @@ spec:
                                   required:
                                   - rules
                                   type: object
+                                podReplacementPolicy:
+                                  type: string
                                 selector:
                                   properties:
                                     matchExpressions:
@@ -6639,6 +6933,16 @@ spec:
                                                                 type: object
                                                             type: object
                                                             x-kubernetes-map-type: atomic
+                                                          matchLabelKeys:
+                                                            items:
+                                                              type: string
+                                                            type: array
+                                                            x-kubernetes-list-type: atomic
+                                                          mismatchLabelKeys:
+                                                            items:
+                                                              type: string
+                                                            type: array
+                                                            x-kubernetes-list-type: atomic
                                                           namespaceSelector:
                                                             properties:
                                                               matchExpressions:
@@ -6707,6 +7011,16 @@ spec:
                                                             type: object
                                                         type: object
                                                         x-kubernetes-map-type: atomic
+                                                      matchLabelKeys:
+                                                        items:
+                                                          type: string
+                                                        type: array
+                                                        x-kubernetes-list-type: atomic
+                                                      mismatchLabelKeys:
+                                                        items:
+                                                          type: string
+                                                        type: array
+                                                        x-kubernetes-list-type: atomic
                                                       namespaceSelector:
                                                         properties:
                                                           matchExpressions:
@@ -6773,6 +7087,16 @@ spec:
                                                                 type: object
                                                             type: object
                                                             x-kubernetes-map-type: atomic
+                                                          matchLabelKeys:
+                                                            items:
+                                                              type: string
+                                                            type: array
+                                                            x-kubernetes-list-type: atomic
+                                                          mismatchLabelKeys:
+                                                            items:
+                                                              type: string
+                                                            type: array
+                                                            x-kubernetes-list-type: atomic
                                                           namespaceSelector:
                                                             properties:
                                                               matchExpressions:
@@ -6841,6 +7165,16 @@ spec:
                                                             type: object
                                                         type: object
                                                         x-kubernetes-map-type: atomic
+                                                      matchLabelKeys:
+                                                        items:
+                                                          type: string
+                                                        type: array
+                                                        x-kubernetes-list-type: atomic
+                                                      mismatchLabelKeys:
+                                                        items:
+                                                          type: string
+                                                        type: array
+                                                        x-kubernetes-list-type: atomic
                                                       namespaceSelector:
                                                         properties:
                                                           matchExpressions:
@@ -7020,6 +7354,14 @@ spec:
                                                         required:
                                                         - port
                                                         type: object
+                                                      sleep:
+                                                        properties:
+                                                          seconds:
+                                                            format: int64
+                                                            type: integer
+                                                        required:
+                                                        - seconds
+                                                        type: object
                                                       tcpSocket:
                                                         properties:
                                                           host:
@@ -7069,6 +7411,14 @@ spec:
                                                             type: string
                                                         required:
                                                         - port
+                                                        type: object
+                                                      sleep:
+                                                        properties:
+                                                          seconds:
+                                                            format: int64
+                                                            type: integer
+                                                        required:
+                                                        - seconds
                                                         type: object
                                                       tcpSocket:
                                                         properties:
@@ -7266,6 +7616,19 @@ spec:
                                                     format: int32
                                                     type: integer
                                                 type: object
+                                              resizePolicy:
+                                                items:
+                                                  properties:
+                                                    resourceName:
+                                                      type: string
+                                                    restartPolicy:
+                                                      type: string
+                                                  required:
+                                                  - resourceName
+                                                  - restartPolicy
+                                                  type: object
+                                                type: array
+                                                x-kubernetes-list-type: atomic
                                               resources:
                                                 properties:
                                                   claims:
@@ -7285,6 +7648,8 @@ spec:
                                                   requests:
                                                     x-kubernetes-preserve-unknown-fields: true
                                                 type: object
+                                              restartPolicy:
+                                                type: string
                                               securityContext:
                                                 properties:
                                                   allowPrivilegeEscalation:
@@ -7637,6 +8002,14 @@ spec:
                                                         required:
                                                         - port
                                                         type: object
+                                                      sleep:
+                                                        properties:
+                                                          seconds:
+                                                            format: int64
+                                                            type: integer
+                                                        required:
+                                                        - seconds
+                                                        type: object
                                                       tcpSocket:
                                                         properties:
                                                           host:
@@ -7686,6 +8059,14 @@ spec:
                                                             type: string
                                                         required:
                                                         - port
+                                                        type: object
+                                                      sleep:
+                                                        properties:
+                                                          seconds:
+                                                            format: int64
+                                                            type: integer
+                                                        required:
+                                                        - seconds
                                                         type: object
                                                       tcpSocket:
                                                         properties:
@@ -7883,6 +8264,19 @@ spec:
                                                     format: int32
                                                     type: integer
                                                 type: object
+                                              resizePolicy:
+                                                items:
+                                                  properties:
+                                                    resourceName:
+                                                      type: string
+                                                    restartPolicy:
+                                                      type: string
+                                                  required:
+                                                  - resourceName
+                                                  - restartPolicy
+                                                  type: object
+                                                type: array
+                                                x-kubernetes-list-type: atomic
                                               resources:
                                                 properties:
                                                   claims:
@@ -7902,6 +8296,8 @@ spec:
                                                   requests:
                                                     x-kubernetes-preserve-unknown-fields: true
                                                 type: object
+                                              restartPolicy:
+                                                type: string
                                               securityContext:
                                                 properties:
                                                   allowPrivilegeEscalation:
@@ -8261,6 +8657,14 @@ spec:
                                                         required:
                                                         - port
                                                         type: object
+                                                      sleep:
+                                                        properties:
+                                                          seconds:
+                                                            format: int64
+                                                            type: integer
+                                                        required:
+                                                        - seconds
+                                                        type: object
                                                       tcpSocket:
                                                         properties:
                                                           host:
@@ -8310,6 +8714,14 @@ spec:
                                                             type: string
                                                         required:
                                                         - port
+                                                        type: object
+                                                      sleep:
+                                                        properties:
+                                                          seconds:
+                                                            format: int64
+                                                            type: integer
+                                                        required:
+                                                        - seconds
                                                         type: object
                                                       tcpSocket:
                                                         properties:
@@ -8507,6 +8919,19 @@ spec:
                                                     format: int32
                                                     type: integer
                                                 type: object
+                                              resizePolicy:
+                                                items:
+                                                  properties:
+                                                    resourceName:
+                                                      type: string
+                                                    restartPolicy:
+                                                      type: string
+                                                  required:
+                                                  - resourceName
+                                                  - restartPolicy
+                                                  type: object
+                                                type: array
+                                                x-kubernetes-list-type: atomic
                                               resources:
                                                 properties:
                                                   claims:
@@ -8526,6 +8951,8 @@ spec:
                                                   requests:
                                                     x-kubernetes-preserve-unknown-fields: true
                                                 type: object
+                                              restartPolicy:
+                                                type: string
                                               securityContext:
                                                 properties:
                                                   allowPrivilegeEscalation:
@@ -9182,8 +9609,15 @@ spec:
                   - provider
                   type: object
                 type: array
-            required:
-            - metrics
+              templates:
+                items:
+                  properties:
+                    clusterScope:
+                      type: boolean
+                    templateName:
+                      type: string
+                  type: object
+                type: array
             type: object
         required:
         - spec
@@ -9278,6 +9712,17 @@ spec:
                   - templateName
                   type: object
                 type: array
+              analysisRunMetadata:
+                properties:
+                  annotations:
+                    additionalProperties:
+                      type: string
+                    type: object
+                  labels:
+                    additionalProperties:
+                      type: string
+                    type: object
+                type: object
               dryRun:
                 items:
                   properties:
@@ -9493,6 +9938,16 @@ spec:
                                                     type: object
                                                 type: object
                                                 x-kubernetes-map-type: atomic
+                                              matchLabelKeys:
+                                                items:
+                                                  type: string
+                                                type: array
+                                                x-kubernetes-list-type: atomic
+                                              mismatchLabelKeys:
+                                                items:
+                                                  type: string
+                                                type: array
+                                                x-kubernetes-list-type: atomic
                                               namespaceSelector:
                                                 properties:
                                                   matchExpressions:
@@ -9561,6 +10016,16 @@ spec:
                                                 type: object
                                             type: object
                                             x-kubernetes-map-type: atomic
+                                          matchLabelKeys:
+                                            items:
+                                              type: string
+                                            type: array
+                                            x-kubernetes-list-type: atomic
+                                          mismatchLabelKeys:
+                                            items:
+                                              type: string
+                                            type: array
+                                            x-kubernetes-list-type: atomic
                                           namespaceSelector:
                                             properties:
                                               matchExpressions:
@@ -9627,6 +10092,16 @@ spec:
                                                     type: object
                                                 type: object
                                                 x-kubernetes-map-type: atomic
+                                              matchLabelKeys:
+                                                items:
+                                                  type: string
+                                                type: array
+                                                x-kubernetes-list-type: atomic
+                                              mismatchLabelKeys:
+                                                items:
+                                                  type: string
+                                                type: array
+                                                x-kubernetes-list-type: atomic
                                               namespaceSelector:
                                                 properties:
                                                   matchExpressions:
@@ -9695,6 +10170,16 @@ spec:
                                                 type: object
                                             type: object
                                             x-kubernetes-map-type: atomic
+                                          matchLabelKeys:
+                                            items:
+                                              type: string
+                                            type: array
+                                            x-kubernetes-list-type: atomic
+                                          mismatchLabelKeys:
+                                            items:
+                                              type: string
+                                            type: array
+                                            x-kubernetes-list-type: atomic
                                           namespaceSelector:
                                             properties:
                                               matchExpressions:
@@ -9874,6 +10359,14 @@ spec:
                                             required:
                                             - port
                                             type: object
+                                          sleep:
+                                            properties:
+                                              seconds:
+                                                format: int64
+                                                type: integer
+                                            required:
+                                            - seconds
+                                            type: object
                                           tcpSocket:
                                             properties:
                                               host:
@@ -9923,6 +10416,14 @@ spec:
                                                 type: string
                                             required:
                                             - port
+                                            type: object
+                                          sleep:
+                                            properties:
+                                              seconds:
+                                                format: int64
+                                                type: integer
+                                            required:
+                                            - seconds
                                             type: object
                                           tcpSocket:
                                             properties:
@@ -10120,6 +10621,19 @@ spec:
                                         format: int32
                                         type: integer
                                     type: object
+                                  resizePolicy:
+                                    items:
+                                      properties:
+                                        resourceName:
+                                          type: string
+                                        restartPolicy:
+                                          type: string
+                                      required:
+                                      - resourceName
+                                      - restartPolicy
+                                      type: object
+                                    type: array
+                                    x-kubernetes-list-type: atomic
                                   resources:
                                     properties:
                                       claims:
@@ -10139,6 +10653,8 @@ spec:
                                       requests:
                                         x-kubernetes-preserve-unknown-fields: true
                                     type: object
+                                  restartPolicy:
+                                    type: string
                                   securityContext:
                                     properties:
                                       allowPrivilegeEscalation:
@@ -10491,6 +11007,14 @@ spec:
                                             required:
                                             - port
                                             type: object
+                                          sleep:
+                                            properties:
+                                              seconds:
+                                                format: int64
+                                                type: integer
+                                            required:
+                                            - seconds
+                                            type: object
                                           tcpSocket:
                                             properties:
                                               host:
@@ -10540,6 +11064,14 @@ spec:
                                                 type: string
                                             required:
                                             - port
+                                            type: object
+                                          sleep:
+                                            properties:
+                                              seconds:
+                                                format: int64
+                                                type: integer
+                                            required:
+                                            - seconds
                                             type: object
                                           tcpSocket:
                                             properties:
@@ -10737,6 +11269,19 @@ spec:
                                         format: int32
                                         type: integer
                                     type: object
+                                  resizePolicy:
+                                    items:
+                                      properties:
+                                        resourceName:
+                                          type: string
+                                        restartPolicy:
+                                          type: string
+                                      required:
+                                      - resourceName
+                                      - restartPolicy
+                                      type: object
+                                    type: array
+                                    x-kubernetes-list-type: atomic
                                   resources:
                                     properties:
                                       claims:
@@ -10756,6 +11301,8 @@ spec:
                                       requests:
                                         x-kubernetes-preserve-unknown-fields: true
                                     type: object
+                                  restartPolicy:
+                                    type: string
                                   securityContext:
                                     properties:
                                       allowPrivilegeEscalation:
@@ -11115,6 +11662,14 @@ spec:
                                             required:
                                             - port
                                             type: object
+                                          sleep:
+                                            properties:
+                                              seconds:
+                                                format: int64
+                                                type: integer
+                                            required:
+                                            - seconds
+                                            type: object
                                           tcpSocket:
                                             properties:
                                               host:
@@ -11164,6 +11719,14 @@ spec:
                                                 type: string
                                             required:
                                             - port
+                                            type: object
+                                          sleep:
+                                            properties:
+                                              seconds:
+                                                format: int64
+                                                type: integer
+                                            required:
+                                            - seconds
                                             type: object
                                           tcpSocket:
                                             properties:
@@ -11361,6 +11924,19 @@ spec:
                                         format: int32
                                         type: integer
                                     type: object
+                                  resizePolicy:
+                                    items:
+                                      properties:
+                                        resourceName:
+                                          type: string
+                                        restartPolicy:
+                                          type: string
+                                      required:
+                                      - resourceName
+                                      - restartPolicy
+                                      type: object
+                                    type: array
+                                    x-kubernetes-list-type: atomic
                                   resources:
                                     properties:
                                       claims:
@@ -11380,6 +11956,8 @@ spec:
                                       requests:
                                         x-kubernetes-preserve-unknown-fields: true
                                     type: object
+                                  restartPolicy:
+                                    type: string
                                   securityContext:
                                     properties:
                                       allowPrivilegeEscalation:
@@ -12480,6 +13058,26 @@ spec:
                                     - templateName
                                     type: object
                                   type: array
+                                analysisRunMetadata:
+                                  properties:
+                                    annotations:
+                                      additionalProperties:
+                                        type: string
+                                      type: object
+                                    labels:
+                                      additionalProperties:
+                                        type: string
+                                      type: object
+                                  type: object
+                                dryRun:
+                                  items:
+                                    properties:
+                                      metricName:
+                                        type: string
+                                    required:
+                                    - metricName
+                                    type: object
+                                  type: array
                                 duration:
                                   type: string
                                 templates:
@@ -12812,6 +13410,9 @@ spec:
                               - name
                               type: object
                             type: array
+                          maxTrafficWeight:
+                            format: int32
+                            type: integer
                           nginx:
                             properties:
                               additionalIngressAnnotations:
@@ -12992,6 +13593,16 @@ spec:
                                               type: object
                                           type: object
                                           x-kubernetes-map-type: atomic
+                                        matchLabelKeys:
+                                          items:
+                                            type: string
+                                          type: array
+                                          x-kubernetes-list-type: atomic
+                                        mismatchLabelKeys:
+                                          items:
+                                            type: string
+                                          type: array
+                                          x-kubernetes-list-type: atomic
                                         namespaceSelector:
                                           properties:
                                             matchExpressions:
@@ -13060,6 +13671,16 @@ spec:
                                           type: object
                                       type: object
                                       x-kubernetes-map-type: atomic
+                                    matchLabelKeys:
+                                      items:
+                                        type: string
+                                      type: array
+                                      x-kubernetes-list-type: atomic
+                                    mismatchLabelKeys:
+                                      items:
+                                        type: string
+                                      type: array
+                                      x-kubernetes-list-type: atomic
                                     namespaceSelector:
                                       properties:
                                         matchExpressions:
@@ -13126,6 +13747,16 @@ spec:
                                               type: object
                                           type: object
                                           x-kubernetes-map-type: atomic
+                                        matchLabelKeys:
+                                          items:
+                                            type: string
+                                          type: array
+                                          x-kubernetes-list-type: atomic
+                                        mismatchLabelKeys:
+                                          items:
+                                            type: string
+                                          type: array
+                                          x-kubernetes-list-type: atomic
                                         namespaceSelector:
                                           properties:
                                             matchExpressions:
@@ -13194,6 +13825,16 @@ spec:
                                           type: object
                                       type: object
                                       x-kubernetes-map-type: atomic
+                                    matchLabelKeys:
+                                      items:
+                                        type: string
+                                      type: array
+                                      x-kubernetes-list-type: atomic
+                                    mismatchLabelKeys:
+                                      items:
+                                        type: string
+                                      type: array
+                                      x-kubernetes-list-type: atomic
                                     namespaceSelector:
                                       properties:
                                         matchExpressions:
@@ -13373,6 +14014,14 @@ spec:
                                       required:
                                       - port
                                       type: object
+                                    sleep:
+                                      properties:
+                                        seconds:
+                                          format: int64
+                                          type: integer
+                                      required:
+                                      - seconds
+                                      type: object
                                     tcpSocket:
                                       properties:
                                         host:
@@ -13422,6 +14071,14 @@ spec:
                                           type: string
                                       required:
                                       - port
+                                      type: object
+                                    sleep:
+                                      properties:
+                                        seconds:
+                                          format: int64
+                                          type: integer
+                                      required:
+                                      - seconds
                                       type: object
                                     tcpSocket:
                                       properties:
@@ -13619,6 +14276,19 @@ spec:
                                   format: int32
                                   type: integer
                               type: object
+                            resizePolicy:
+                              items:
+                                properties:
+                                  resourceName:
+                                    type: string
+                                  restartPolicy:
+                                    type: string
+                                required:
+                                - resourceName
+                                - restartPolicy
+                                type: object
+                              type: array
+                              x-kubernetes-list-type: atomic
                             resources:
                               properties:
                                 claims:
@@ -13638,6 +14308,8 @@ spec:
                                 requests:
                                   x-kubernetes-preserve-unknown-fields: true
                               type: object
+                            restartPolicy:
+                              type: string
                             securityContext:
                               properties:
                                 allowPrivilegeEscalation:
@@ -13990,6 +14662,14 @@ spec:
                                       required:
                                       - port
                                       type: object
+                                    sleep:
+                                      properties:
+                                        seconds:
+                                          format: int64
+                                          type: integer
+                                      required:
+                                      - seconds
+                                      type: object
                                     tcpSocket:
                                       properties:
                                         host:
@@ -14039,6 +14719,14 @@ spec:
                                           type: string
                                       required:
                                       - port
+                                      type: object
+                                    sleep:
+                                      properties:
+                                        seconds:
+                                          format: int64
+                                          type: integer
+                                      required:
+                                      - seconds
                                       type: object
                                     tcpSocket:
                                       properties:
@@ -14236,6 +14924,19 @@ spec:
                                   format: int32
                                   type: integer
                               type: object
+                            resizePolicy:
+                              items:
+                                properties:
+                                  resourceName:
+                                    type: string
+                                  restartPolicy:
+                                    type: string
+                                required:
+                                - resourceName
+                                - restartPolicy
+                                type: object
+                              type: array
+                              x-kubernetes-list-type: atomic
                             resources:
                               properties:
                                 claims:
@@ -14255,6 +14956,8 @@ spec:
                                 requests:
                                   x-kubernetes-preserve-unknown-fields: true
                               type: object
+                            restartPolicy:
+                              type: string
                             securityContext:
                               properties:
                                 allowPrivilegeEscalation:
@@ -14614,6 +15317,14 @@ spec:
                                       required:
                                       - port
                                       type: object
+                                    sleep:
+                                      properties:
+                                        seconds:
+                                          format: int64
+                                          type: integer
+                                      required:
+                                      - seconds
+                                      type: object
                                     tcpSocket:
                                       properties:
                                         host:
@@ -14663,6 +15374,14 @@ spec:
                                           type: string
                                       required:
                                       - port
+                                      type: object
+                                    sleep:
+                                      properties:
+                                        seconds:
+                                          format: int64
+                                          type: integer
+                                      required:
+                                      - seconds
                                       type: object
                                     tcpSocket:
                                       properties:
@@ -14860,6 +15579,19 @@ spec:
                                   format: int32
                                   type: integer
                               type: object
+                            resizePolicy:
+                              items:
+                                properties:
+                                  resourceName:
+                                    type: string
+                                  restartPolicy:
+                                    type: string
+                                required:
+                                - resourceName
+                                - restartPolicy
+                                type: object
+                              type: array
+                              x-kubernetes-list-type: atomic
                             resources:
                               properties:
                                 claims:
@@ -14879,6 +15611,8 @@ spec:
                                 requests:
                                   x-kubernetes-preserve-unknown-fields: true
                               type: object
+                            restartPolicy:
+                              type: string
                             securityContext:
                               properties:
                                 allowPrivilegeEscalation:
@@ -15683,6 +16417,7 @@ rules:
   - get
   - list
   - watch
+  - update
 - apiGroups:
   - ""
   resources:
@@ -16020,6 +16755,27 @@ spec:
           periodSeconds: 5
           successThreshold: 1
           timeoutSeconds: 4
+        resources:
+          limits:
+            ephemeral-storage: 1Gi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          seccompProfile:
+            type: RuntimeDefault
+        volumeMounts:
+        - mountPath: /home/argo-rollouts/plugin-bin
+          name: plugin-bin
+        - mountPath: /tmp
+          name: tmp
       securityContext:
         runAsNonRoot: true
       serviceAccountName: argo-rollouts
+      volumes:
+      - emptyDir: {}
+        name: plugin-bin
+      - emptyDir: {}
+        name: tmp
