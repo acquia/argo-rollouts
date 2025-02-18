@@ -12,12 +12,13 @@ ARG TARGETOS=linux
 ARG TARGETARCH=amd64
 
 # Install Go
-ARG GOLANG_VERSION=1.24.0
-RUN curl -LO "https://go.dev/dl/go${GOLANG_VERSION}.${TARGETOS}-${TARGETARCH}.tar.gz" && \
-  tar -C /usr/local -xzf "go${GOLANG_VERSION}.${TARGETOS}-${TARGETARCH}.tar.gz" && \
-  rm -f "go${GOLANG_VERSION}.${TARGETOS}-${TARGETARCH}.tar.gz" && \
-  ls -la /usr/local/go/bin && \
-  chmod +x /usr/local/go/bin/go
+RUN GOLANG_VERSION=$(curl -s https://go.dev/VERSION?m=text | head -n 1 | sed 's/go//') && \
+    echo "Installing Go version ${GOLANG_VERSION}" && \
+    curl -LO "https://go.dev/dl/go${GOLANG_VERSION}.${TARGETOS}-${TARGETARCH}.tar.gz" && \
+    tar -C /usr/local -xzf "go${GOLANG_VERSION}.${TARGETOS}-${TARGETARCH}.tar.gz" && \
+    rm -f "go${GOLANG_VERSION}.${TARGETOS}-${TARGETARCH}.tar.gz" && \
+    ls -la /usr/local/go/bin && \
+    chmod +x /usr/local/go/bin/go
 
 # Set Golang environment variables
 ENV GOPATH="/go"
