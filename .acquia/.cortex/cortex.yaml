@@ -1,0 +1,19 @@
+openapi: 3.0.1
+info:
+  title: acquia/argo-rollouts
+  description: Fork of argo/argo-rollouts to manage Argo Rollouts CVEs, fips image
+  x-cortex-tag: acquia/argo-rollouts
+  x-cortex-git:
+    github:
+      repository: acquia/argo-rollouts
+  x-cortex-owners:
+    - type: GROUP
+      name: acquia/k8s-core-services
+      provider: GITHUB
+      description: Kubernetes Core Services
+    - type: SLACK
+      channel: cloud-eng-core-services
+      notificationsEnabled: true
+      description: Core services team public channel for cross team communication
+  x-cortex-groups:
+    - drupal-cloud
