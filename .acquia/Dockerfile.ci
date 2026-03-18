@@ -44,3 +44,5 @@ WORKDIR /argo-rollouts
 ADD https://github.com/argoproj/argo-rollouts.git .
 
 RUN git config --global --add safe.directory '*'
+
+COPY . .
