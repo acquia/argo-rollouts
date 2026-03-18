@@ -40,11 +40,8 @@ ENV PATH="${PATH}:${GOROOT}/bin:${GOBIN}"
 
 WORKDIR /src
 
-# Fetch upstream source
+# Fetch the main branch from upstream source
 ADD https://github.com/argoproj/argo-rollouts.git .
-
-# Copy FIPS Makefile on top of upstream source
-COPY Makefile-FIPS.mk Makefile
 
 ARG MAKE_TARGET="controller-fips"
 RUN GOOS=$TARGETOS GOARCH=$TARGETARCH make ${MAKE_TARGET}
