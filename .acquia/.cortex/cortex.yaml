@@ -1,0 +1,525 @@
+openapi: 3.0.1
+info:
+  title: argo-rollouts
+  description: argo rollouts deployment
+  x-cortex-git:
+    github:
+      repository: acquia/argo-rollouts
+  x-cortex-tag: acquia/argo-rollouts
+  x-cortex-owners:
+  - type: GROUP
+    name: acquia/ngc-web
+    provider: GITHUB
+    description: ngcweb team
+  - type: SLACK
+    channel: cloud-eng-ngc-web
+    notificationsEnabled: true
+    description: Team channel
+  x-cortex-groups:
+  - drupal-cloud
+  - platform-service
+  - is-service
+  - is-dependency
+  - kaas
+  - in-fedramp-boundary
+  x-cortex-oncall:
+    pagerduty:
+      id: PW9J9B6
+      type: SERVICE
+  x-cortex-link:
+  - type: Documentation
+    name: Onboarding Docs
+    url: https://github.com/acquia/kaas-rollouts/blob/main/README.md
+    description: This document provides onboarding documentation for this service.
+  - name: Architecture
+    type: documentation
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/architecture.md
+    description: Architecture info for kaas-rollouts
+  - type: Delivery
+    name: Artifacts
+    url: https://github.com/acquia/kaas-rollouts/blob/main/charts/kaas-rollouts/values-prod.yaml
+    description: There are values-dev.yaml, values-qa.yaml, values-staging.yaml, values-prod.yaml that platform.yaml refers to.
+  - name: Test Strategy
+    type: Documentation
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/testing.md
+    description: This document explains Test strategy for this service.
+  - name: Integration Tests
+    type: Testing
+    url: https://github.com/acquia/kaas-rollouts/tree/main/integration-tests
+    description: Integration tests for kaas-rollouts
+  - name: Personal Identifiable Information removal
+    type: Runbook
+    url: none
+    description: This does not apply. We don't handle any PII.
+  - name: CFG-01
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/configuration-management.md
+    description: Proof of Compliance for CFG-01
+  - name: CFG-02
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/configuration-management.md
+    description: Proof of Compliance for CFG-02
+  - name: CFG-02.1
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/configuration-management.md
+    description: Proof of Compliance for CFG-02.1
+  - name: CFG-02.2
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/configuration-management.md
+    description: Proof of Compliance for CFG-02.2
+  - name: VPM-02
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/component-lifecycles.md
+    description: Proof of Compliance for VPM-02
+  - name: VPM-04.2
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/component-lifecycles.md
+    description: Proof of Compliance for VPM-04.2
+  - name: No Personal Identifiable Information in Code
+    type: Coding Practices
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/component-lifecycle.md
+    description: Proof of Compliance for VPM-04.2
+  - name: No Personal Identifiable Information in Logs
+    type: Coding Practices
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/component-lifecycle.md
+    description: Proof of Compliance for VPM-04.2
+  - name: VPM-06
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/component-lifecycles.md
+    description: Proof of Compliance for VPM-06
+  - name: CRY-03
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/encryption.md
+    description: Proof of Compliance for CRY-03
+  - name: Transit Data Encryption
+    type: Security
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/encryption.md
+    description: Proof of Compliance for CRY-03
+  - name: CRY-05
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/encryption.md
+    description: Proof of Compliance for CRY-05
+  - name: Persistent Data Encryption
+    type: Security
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/encryption.md
+    description: Proof of Compliance for CRY-05
+  - name: CRY-08
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/encryption.md
+    description: Proof of Compliance for CRY-08
+  - name: CRY-09
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/encryption.md
+    description: Proof of Compliance for CRY-09
+  - name: CRY-09.1
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/encryption.md
+    description: Proof of Compliance for CRY-09.1
+  - name: NET-01
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/security.md
+    description: Proof of Compliance for NET-01
+  - name: NET-03
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/security.md
+    description: Proof of Compliance for NET-03
+  - name: NET-03.1
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/security.md
+    description: Proof of Compliance for NET-03.1
+  - name: NET-04
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/security.md
+    description: Proof of Compliance for NET-04
+  - name: NET-04.1
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/security.md
+    description: Proof of Compliance for NET-04.1
+  - name: NET-05.1
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/security.md
+    description: Proof of Compliance for NET-05.1
+  - name: NET-06
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/security.md
+    description: Proof of Compliance for NET-06
+  - name: NET-08
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/security.md
+    description: Proof of Compliance for NET-08
+  - name: NET-08.1
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/security.md
+    description: Proof of Compliance for NET-08.1
+  - name: NET-12
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/security.md
+    description: Proof of Compliance for NET-12
+  - name: AST-04
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/documentation-management.md
+    description: Proof of Compliance for AST-04
+  - name: TDA-04
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/documentation-management.md
+    description: Proof of Compliance for TDA-04
+  - name: IAC-02
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/security.md
+    description: Proof of Compliance for IAC-02
+  - name: Access Authorization
+    type: Security
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/security.md
+    description: Proof of Compliance for IAC-02
+  - name: IAC-04
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/security.md
+    description: Proof of Compliance for IAC-04
+  - name: IAC-08
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/security.md
+    description: Proof of Compliance for IAC-08
+  - name: Least privilege access enabled
+    type: Security
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/security.md
+    description: Proof of Compliance for IAC-08
+  - name: CAP-01
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/capacity-planning.md
+    description: Proof of Compliance for CAP-01
+  - name: CAP-02
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/capacity-planning.md
+    description: Proof of Compliance for CAP-02
+  - name: CAP-03
+    type: compliance
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/capacity-planning.md
+    description: Proof of Compliance for CAP-03
+  - name: DCH-03
+    type: compliance
+    url: https://github.com/acquia/kaas/blob/main/docs/security.md#identity-access
+    description: Proof of Compliance for DCH-03
+  - name: DCH-18
+    type: compliance
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/DCH-18.md
+    description: Proof of Compliance for DCH-18
+  - name: MON-01.1
+    type: compliance
+    url: https://github.com/acquia/kaas/blob/main/docs/monitoring.md#monitoring
+    description: Proof of Compliance for MON-01.1
+  - name: MON-01.3
+    type: compliance
+    url: https://github.com/acquia/kaas/blob/main/docs/monitoring.md#monitoring
+    description: Proof of Compliance for MON-01.3
+  - name: MON-01.6
+    type: compliance
+    url: https://github.com/acquia/kaas/blob/main/docs/monitoring.md#monitoring
+    description: Proof of Compliance for MON-01.6
+  - name: MON-01.7
+    type: compliance
+    url: https://github.com/acquia/kaas/blob/main/docs/monitoring.md#monitoring
+    description: Proof of Compliance for MON-01.7
+  - name: MON-01.8
+    type: compliance
+    url: https://github.com/acquia/kaas/blob/main/docs/compliance/README.md#MON-01.8
+    description: Proof of Compliance for MON-01.8
+  - name: MON-02
+    type: compliance
+    url: https://github.com/acquia/kaas/blob/main/docs/monitoring.md#monitoring
+    description: Proof of Compliance for MON-02
+  - name: MON-02.1
+    type: compliance
+    url: https://github.com/acquia/kaas/blob/main/docs/monitoring.md#monitoring
+    description: Proof of Compliance for MON-02.1
+  - name: MON-10
+    type: compliance
+    url: https://github.com/acquia/kaas/blob/main/docs/monitoring.md#monitoring
+    description: Proof of Compliance for MON-10
+  - name: OPS-01.1
+    type: compliance
+    url: https://github.com/acquia/kaas/tree/main/docs
+    description: Proof of Compliance for OPS-01.1
+
+  # FedRAMP Checks
+  - type: Compliance
+    name: CRY-04
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/security.md#encryption
+    description: Proof of Compliance for CRY-04
+  - type: Compliance
+    name: DCH-19
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/security.md#stateful-resource-management
+    description: Proof of Compliance for DCH-19
+  - type: Compliance
+    name: END-03
+    url: https://github.com/acquia/kaas/blob/main/docs/compliance/README.md#END-03
+    description: Proof of Compliance for END-03
+  - type: Compliance
+    name: MON-16
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/monitoring.md
+    description: Proof of Compliance for MON-16
+  - type: Compliance
+    name: IAC-10.1
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/security.md#user-access
+    description: Proof of Compliance for IAC-10.1
+  - type: Compliance
+    name: IAC-24.1
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/security.md#user-access
+    description: Proof of Compliance for IAC-24.1
+  - type: Compliance
+    name: CFG-04
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/configuration-management.md
+    description: Proof of Compliance for CFG-04
+  - type: Compliance
+    name: IAC-21.4
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/security.md#identity-access
+    description: Proof of Compliance for IAC-21.4
+  - type: Compliance
+    name: TDA-17
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/component-lifecycle.md
+    description: Proof of Compliance for TDA-17
+  - type: Compliance
+    name: CFG-03.1
+    url: https://github.com/acquia/kaas/blob/main/docs/compliance/README.md#CFG-03.1
+    description: Proof of Compliance for CFG-03.1
+  - type: Compliance
+    name: IAC-26
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/security.md#user-access
+    description: Proof of Compliance for IAC-26
+  - type: Compliance
+    name: SEA-04
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/security.md#workloads
+    description: Proof of Compliance for SEA-04
+  - type: Compliance
+    name: BCD-01.1
+    url: https://github.com/acquia/kaas/blob/main/docs/compliance/README.md#BCD-01.1
+    description: Proof of Compliance for BCD-01.1
+  - type: Compliance
+    name: BCD-03
+    url: https://github.com/acquia/kaas/blob/main/docs/compliance/README.md#BCD-03
+    description: Proof of Compliance for BCD-03
+  - type: Compliance
+    name: BCD-04.1
+    url: https://github.com/acquia/kaas/blob/main/docs/compliance/README.md#BCD-04.1
+    description: Proof of Compliance for BCD-04.1
+  - type: Compliance
+    name: CFG-02.3
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/configuration-management.md
+    description: Proof of Compliance for CFG-02.3
+  - type: Compliance
+    name: IAC-02.3
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/security.md#user-access
+    description: Proof of Compliance for IAC-02.3
+  - type: Compliance
+    name: IAC-03.1
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/security.md#user-access
+    description: Proof of Compliance for IAC-03.1
+  - type: Compliance
+    name: IAC-03.3
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/security.md#user-access
+    description: Proof of Compliance for IAC-03.3
+  - type: Compliance
+    name: END-04
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/END-04.md
+    description: Proof of Compliance for END-04
+  - type: Compliance
+    name: END-06.2
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/END-06.2.md
+    description: Proof of Compliance for END-06.2
+  - type: Compliance
+    name: IAC-03
+    url: https://github.com/acquia/kaas/blob/main/docs/compliance/README.md#IAC-03
+    description: Proof of Compliance for IAC-03
+  - type: Compliance
+    name: MON-06
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/MON-06.md
+    description: Proof of Compliance for MON-06
+  - type: Compliance
+    name: TDA-18
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/TDA-18.md
+    description: Proof of Compliance for TDA-18
+  - type: Compliance
+    name: TDA-19
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/TDA-19.md
+    description: Proof of Compliance for TDA-19
+  - type: Compliance
+    name: VPM-01
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/VPM-01.md
+    description: Proof of Compliance for VPM-01
+  - type: Compliance
+    name: VPM-05
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/VPM-05.md
+    description: Proof of Compliance for VPM-05
+  - type: Security
+    name: OSS Patching
+    url: https://github.com/acquia/kaas/blob/main/docs/security.md#scanning
+    description: Proof of Compliance for VPM-05
+  - type: Security
+    name: OS and Library updates
+    url: https://github.com/acquia/kaas/blob/main/docs/security.md#scanning
+    description: Proof of Compliance for VPM-05
+  - type: Compliance
+    name: SEA-06
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/SEA-06.md
+    description: Proof of Compliance for SEA-06
+  - type: Compliance
+    name: SEA-05
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/SEA-05.md
+    description: Proof of Compliance for SEA-05
+  - type: Compliance
+    name: SEA-10
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/SEA-10.md
+    description: Proof of Compliance for SEA-10
+  - type: Compliance
+    name: MON-03
+    url: https://acquia.atlassian.net/wiki/spaces/SCNG/pages/30408974/Falco+Monitoring+Playbook
+    description: Proof of Compliance for MON-03
+  - type: Compliance
+    name: CHG-04.4
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/CHG-04.4.md
+    description: Proof of Compliance for CHG-04.4
+  - type: Compliance
+    name: CHG-04
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/CHG-04.md
+    description: Proof of Compliance for CHG-04
+  - type: Compliance
+    name: CHG-04.1
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/CHG-04.1.md
+    description: Proof of Compliance for CHG-04.1
+  - type: Compliance
+    name: CHG-04.2
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/CHG-04.2.md
+    description: Proof of Compliance for CHG-04.2
+  - type: Compliance
+    name: CHG-06
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/CHG-06.md
+    description: Proof of Compliance for CHG-06
+  - type: Compliance
+    name: NET-06.1
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/NET-06.md
+    description: Proof of Compliance for NET-06.1
+  - type: Compliance
+    name: CFG-05
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/CFG-05.md
+    description: Proof of Compliance for CFG-05
+  - type: Compliance
+    name: CFG-02.5
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/CFG-02_5.md
+    description: Proof of Compliance for CFG-02.5
+  - type: Compliance
+    name: CFG-03
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/CFG-03.md
+    description: Proof of Compliance for CFG-03
+  - type: Compliance
+    name: CFG-03.2
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/CFG-03_2.md
+    description: Proof of Compliance for CFG-03.2
+  - type: Compliance
+    name: CFG-03.3
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/CFG-03_3.md
+    description: Proof of Compliance for CFG-03.3
+  - type: Compliance
+    name: CFG-03.4
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/CFG-03_4.md
+    description: Proof of Compliance for CFG-03.4
+  - type: Compliance
+    name: END-04.7
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/END-04.7.md
+    description: Proof of Compliance for END-04.7
+  - type: Compliance
+    name: END-06
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/END-06.md
+    description: Proof of Compliance for END-06
+  - type: Compliance
+    name: END-06.1
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/END-06.1.md
+    description: Proof of Compliance for END-06.1
+  - type: Compliance
+    name: END-07
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/END-07.md
+    description: Proof of Compliance for END-07
+  - type: Compliance
+    name: SEA-20
+    url: https://github.com/acquia/kaas/blob/main/doc/time-synchronization.md
+    description: Proof of Compliance for SEA-20
+  - type: Compliance
+    name: MON-07
+    url: https://github.com/acquia/kaas/blob/main/doc/time-synchronization.md
+    description: Proof of Compliance for MON-07
+  - type: Compliance
+    name: MON-07.1
+    url: https://github.com/acquia/kaas/blob/main/doc/time-synchronization.md
+    description: Proof of Compliance for MON-07.1
+  - type: Compliance
+    name: CRY-01.1
+    url: https://github.com/acquia/kaas/blob/main/doc/encryption.md
+    description: Proof of Compliance for CRY-01.1.
+  - type: Compliance
+    name: CRY-02
+    url: https://github.com/acquia/kaas/blob/main/doc/encryption.md
+    description: Proof of Compliance for CRY-02.
+  - type: Compliance
+    name: NET-18.1
+    url: https://github.com/acquia/kaas/blob/main/doc/monitoring.md
+    description: Proof of Compliance for NET-18.1
+  - type: Compliance
+    name: NET-18
+    url: https://github.com/acquia/kaas/blob/main/doc/service-security.md#network
+    description: Proof of Compliance for NET-18
+  - type: Compliance
+    name: NET-03.2
+    url: https://github.com/acquia/kaas-teleport-proxy/blob/master/docs/compliance/security.md#network
+    description: Proof of Compliance for NET-03.2
+  - type: Compliance
+    name: END-02
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/END-02.md
+    description: Proof of Compliance for END-02
+  - type: Compliance
+    name: TPM-04.2
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/TPM-04_2.md
+    description: Proof of Compliance for TPM-04.2
+  - type: Compliance
+    name: VPM-07
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/VPM-07.md
+    description: Proof of Complaince for VPM-07
+  - type: Compliance
+    name: NET-02.1
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/NET-02_1.md
+    description: Proof of Compliance for NET-02.1
+  - type: Compliance
+    name: DCH-13.1
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/DCH-13.1.md
+    description: Proof of Compliance for DCH-13.1
+  - type: Compliance
+    name: IAC-12
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/IAC-12.md
+    description: Proof of Compliance for IAC-12
+  - type: Compliance
+    name: NET-14.4
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/security.md#remote-access
+    description: Proof of Compliance for NET-14.4
+  - type: Compliance
+    name: NET-14
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/security.md#remote-access
+    description: Proof of Compliance for NET-14
+  - type: Compliance
+    name: END-16.1
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/security.md
+    description: Proof of Compliance for END-16.1
+  - type: Compliance
+    name: NET-05.2
+    url: https://github.com/acquia/kaas-rollouts/blob/main/docs/security.md
+    description: Proof of Compliance for NET-05.2
+  - type: Compliance
+    name: CHG-04.3
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/CHG-04.3.md
+    description: Proof of Compliance for CHG-04.3
+  - type: Compliance
+    name: IAC-15.1
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/IAC-15_1.md
+    description: Proof of Compliance for IAC-15.1
+  - type: Compliance
+    name: TDA-02.2
+    url: https://github.com/acquia/kaas/blob/main/doc/Global-security-controls/TDA-02_2.md
+    description: Proof of Compliance for TDA-02.2
+  x-cortex-custom-metadata:
+    CodeCoverage: false
