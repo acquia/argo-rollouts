@@ -4,7 +4,7 @@ FROM jfrog.ais.acquia.io/devops-pipeline-prod/acquia/amazonlinux:2023 as argo-ro
 USER root
 RUN yum makecache \
   && yum update -y \
-  && yum install -y tar gcc git \
+  && yum install -y tar gcc \
   && yum clean all \
   && rm -rf /var/cache/yum
 
@@ -36,10 +36,12 @@ ENV CGO_ENABLED=1
 # Add path to go binaries
 ENV PATH="${PATH}:${GOROOT}/bin:${GOBIN}"
 
-WORKDIR /go/src/github.com/argoproj/argo-rollouts
+#ARG ARGO_ROLLOUTS_VERSION=v1.9.0-rc3
 
-# Perform the build
-COPY . .
+WORKDIR /src
+
+# Fetch the main branch from upstream source
+ADD https://github.com/argoproj/argo-rollouts.git .
 
 ARG MAKE_TARGET="controller-fips"
 RUN GOOS=$TARGETOS GOARCH=$TARGETARCH make ${MAKE_TARGET}
@@ -48,7 +50,7 @@ RUN GOOS=$TARGETOS GOARCH=$TARGETARCH make ${MAKE_TARGET}
 ## Final image
 #####################################################################################################
 FROM jfrog.ais.acquia.io/devops-pipeline-prod/acquia/amazonlinux:2023
-COPY --from=argo-rollouts-builder /go/src/github.com/argoproj/argo-rollouts/dist/rollouts-controller /bin/
+COPY --from=argo-rollouts-builder /src/dist/rollouts-controller /bin/
 
 USER 999
 
