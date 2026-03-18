@@ -43,6 +43,8 @@ WORKDIR /src
 # Fetch the main branch from upstream source
 ADD https://github.com/argoproj/argo-rollouts.git .
 
+COPY . .
+
 ARG MAKE_TARGET="controller-fips"
 RUN GOOS=$TARGETOS GOARCH=$TARGETARCH make ${MAKE_TARGET}
 
