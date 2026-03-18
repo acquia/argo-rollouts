@@ -36,12 +36,12 @@ ENV CGO_ENABLED=1
 # Add path to go binaries
 ENV PATH="${PATH}:${GOROOT}/bin:${GOBIN}"
 
-#ARG ARGO_ROLLOUTS_VERSION=v1.9.0-rc3
+ARG ARGO_ROLLOUTS_COMMIT="3ee541816904938a82db826f18a328a673648ef8"
 
 WORKDIR /src
 
-# Fetch the main branch from upstream source
-ADD https://github.com/argoproj/argo-rollouts.git .
+# Fetch upstream source at the specified sha
+ADD https://github.com/argoproj/argo-rollouts.git#${ARGO_ROLLOUTS_COMMIT} .
 
 COPY . .
 
