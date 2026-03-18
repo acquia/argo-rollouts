@@ -36,9 +36,9 @@ ENV CGO_ENABLED=1
 # Add path to go binaries
 ENV PATH="${PATH}:${GOROOT}/bin:${GOBIN}"
 
+#ARG ARGO_ROLLOUTS_VERSION=v1.9.1
+
 WORKDIR /argo-rollouts
 
-RUN git config --global --add safe.directory '*'
-
-# Perform the build
-COPY . .
+# Fetch upstream source at the specified version
+ADD https://github.com/argoproj/argo-rollouts.git .
