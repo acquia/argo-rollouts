@@ -18,8 +18,7 @@ pre_build:
     required: false
   check_fips:
     - steps:
-        - cd /argo-rollouts
-        - make check-fips
+        - cd /argo-rollouts && make check-fips
 build:
   service_image:
     - name: argo-rollouts/rollouts-controller
