@@ -25,7 +25,6 @@ import (
 	notificationapi "github.com/argoproj/notifications-engine/pkg/api"
 	notificationcontroller "github.com/argoproj/notifications-engine/pkg/controller"
 
-	"github.com/pkg/errors"
 	smiclientset "github.com/servicemeshinterface/smi-sdk-go/pkg/gen/client/split/clientset/versioned"
 	log "github.com/sirupsen/logrus"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -160,6 +159,7 @@ type Manager struct {
 	istioDynamicInformerFactory          dynamicinformer.DynamicSharedInformerFactory
 	namespaced                           bool
 	kubeInformerFactory                  kubeinformers.SharedInformerFactory
+	replicaSetInformerFactory            kubeinformers.SharedInformerFactory
 	notificationConfigMapInformerFactory kubeinformers.SharedInformerFactory
 	notificationSecretInformerFactory    kubeinformers.SharedInformerFactory
 	jobInformerFactory                   kubeinformers.SharedInformerFactory
@@ -281,6 +281,7 @@ func NewManager(
 	istioDynamicInformerFactory dynamicinformer.DynamicSharedInformerFactory,
 	namespaced bool,
 	kubeInformerFactory kubeinformers.SharedInformerFactory,
+	replicaSetInformerFactory kubeinformers.SharedInformerFactory,
 	jobInformerFactory kubeinformers.SharedInformerFactory,
 	ephemeralMetadataThreads int,
 	ephemeralMetadataPodRetries int,
@@ -438,6 +439,7 @@ func NewManager(
 		istioDynamicInformerFactory:          istioDynamicInformerFactory,
 		namespaced:                           namespaced,
 		kubeInformerFactory:                  kubeInformerFactory,
+		replicaSetInformerFactory:            replicaSetInformerFactory,
 		jobInformerFactory:                   jobInformerFactory,
 		istioPrimaryDynamicClient:            istioPrimaryDynamicClient,
 		notificationConfigMapInformerFactory: notificationConfigMapInformerFactory,
@@ -470,15 +472,14 @@ func (c *Manager) Run(ctx context.Context, rolloutThreadiness, serviceThreadines
 		log.Infof("Starting Healthz Server at %s", c.healthzServer.Addr)
 		err := c.healthzServer.ListenAndServe()
 		if err != nil {
-			err = errors.Wrap(err, "Healthz Server Error")
-			log.Error(err)
+			log.Error(fmt.Errorf("Healthz Server Error: %w", err))
 		}
 	}()
 
 	go func() {
 		log.Infof("Starting Metric Server at %s", c.metricsServer.Addr)
 		if err := c.metricsServer.ListenAndServe(); err != nil {
-			log.Error(errors.Wrap(err, "Metric Server Error"))
+			log.Error(fmt.Errorf("Metric Server Error: %w", err))
 		}
 	}()
 
@@ -558,6 +559,9 @@ func (c *Manager) startLeading(ctx context.Context, rolloutThreadiness, serviceT
 		c.clusterDynamicInformerFactory.Start(ctx.Done())
 	}
 	c.kubeInformerFactory.Start(ctx.Done())
+	if c.replicaSetInformerFactory != nil {
+		c.replicaSetInformerFactory.Start(ctx.Done())
+	}
 
 	c.jobInformerFactory.Start(ctx.Done())
 
