@@ -25,7 +25,7 @@ build:
       file: "Dockerfile-FIPS"
       context: "."
       custom_tags:
-        - fips-v1.9.0-release
+        - fips-release-1.9
       build_args:
         - secrets:
             - type: vault
