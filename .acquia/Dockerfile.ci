@@ -10,10 +10,11 @@ RUN yum makecache \
 
 ARG TARGETOS=linux
 ARG TARGETARCH=amd64
+# renovate: datasource=golang-version depName=golang packageName=golang versioning=semver
+ARG GOLANG_VERSION=1.26.3
 
 # Install Go
-RUN GOLANG_VERSION=$(curl -s https://go.dev/VERSION?m=text | head -n 1 | sed 's/go//') && \
-    echo "Installing Go version ${GOLANG_VERSION}" && \
+RUN echo "Installing Go version ${GOLANG_VERSION}" && \
     curl -LO "https://go.dev/dl/go${GOLANG_VERSION}.${TARGETOS}-${TARGETARCH}.tar.gz" && \
     tar -C /usr/local -xzf "go${GOLANG_VERSION}.${TARGETOS}-${TARGETARCH}.tar.gz" && \
     rm -f "go${GOLANG_VERSION}.${TARGETOS}-${TARGETARCH}.tar.gz" && \
@@ -30,18 +31,18 @@ ENV GOARCH=${TARGETARCH}
 ENV GOPRIVATE=github.com/acquia
 
 # FIPS
-ENV GOEXPERIMENT=boringcrypto
+ENV GODEBUG='fips140=on'
 ENV CGO_ENABLED=1
 
 # Add path to go binaries
 ENV PATH="${PATH}:${GOROOT}/bin:${GOBIN}"
 
-#ARG ARGO_ROLLOUTS_VERSION=v1.9.1
+ARG ARGO_ROLLOUTS_UPSTREAM=release-1.9
 
 WORKDIR /argo-rollouts
 
-# Fetch upstream source at the specified version
-ADD https://github.com/argoproj/argo-rollouts.git .
+# Fetch upstream source at the specified sha/tag/branch
+ADD https://github.com/argoproj/argo-rollouts.git#${ARGO_ROLLOUTS_UPSTREAM} .
 
 RUN git config --global --add safe.directory '*'
 
