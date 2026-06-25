@@ -24,7 +24,7 @@ RUN cd ${GOPATH}/src/dummy && \
 ####################################################################################################
 # UI build stage
 ####################################################################################################
-FROM --platform=$BUILDPLATFORM docker.io/library/node:18 AS argo-rollouts-ui
+FROM --platform=$BUILDPLATFORM docker.io/library/node:24 AS argo-rollouts-ui
 
 WORKDIR /src
 ADD ["ui/package.json", "ui/yarn.lock", "./"]
