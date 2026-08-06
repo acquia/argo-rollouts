@@ -37,7 +37,7 @@ ENV CGO_ENABLED=1
 # Add path to go binaries
 ENV PATH="${PATH}:${GOROOT}/bin:${GOBIN}"
 
-ARG ARGO_ROLLOUTS_UPSTREAM=master
+ARG ARGO_ROLLOUTS_UPSTREAM=v1.9.1
 
 WORKDIR /argo-rollouts
 
