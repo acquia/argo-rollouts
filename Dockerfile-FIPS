@@ -46,13 +46,14 @@ ADD https://github.com/argoproj/argo-rollouts.git#${ARGO_ROLLOUTS_UPSTREAM} .
 
 #####################################################################################################
 # DEPENDENCY MANAGEMENT
-# Update all packages to latest regardless to upstream
+# Update dependencies while respecting k8s version constraints.
+# The k8s.io/* packages must stay aligned - blindly upgrading breaks compatibility.
 #####################################################################################################
-RUN cp go.mod go.mod.tmp && cp go.sum go.sum.tmp && \
-    go get -u ./... && go mod tidy && \
+RUN cp go.mod go.mod.bak && cp go.sum go.sum.bak && \
+    go get -u=patch ./... && go mod tidy && \
     echo "=== UPDATED PACKAGES ===" && \
-    diff go.mod.tmp go.mod || true && \
-    rm go.mod.tmp go.sum.tmp
+    diff go.mod.bak go.mod || true && \
+    rm go.mod.bak go.sum.bak
 
 COPY . .
 
