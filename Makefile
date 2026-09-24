@@ -27,10 +27,9 @@ build-fips:
 
 .PHONY: controller-fips
 controller-fips:
-	GOEXPERIMENT=boringcrypto CGO_ENABLED=1 go build -v -ldflags '${LDFLAGS}' -o ${DIST_DIR}/rollouts-controller ./cmd/rollouts-controller
+	GOFIPS140=latest go build -v -ldflags '${LDFLAGS}' -o ${DIST_DIR}/rollouts-controller ./cmd/rollouts-controller
 
-# Note: This target might not work as expected on arm64 architecture.
 .PHONY: check-fips
 check-fips: controller-fips
-	go tool nm ${DIST_DIR}/rollouts-controller | grep "_Cfunc__goboringcrypto_" || (echo "CGO boringcrypto could not be detected in the go application binary" && exit 1)
+	go version -m ${DIST_DIR}/rollouts-controller | grep -E 'GOFIPS140|fips140' || (echo "FIPS 140 module could not be detected in the go application binary" && exit 1)
 
