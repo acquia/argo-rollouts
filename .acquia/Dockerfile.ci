@@ -46,4 +46,14 @@ ADD https://github.com/argoproj/argo-rollouts.git#${ARGO_ROLLOUTS_UPSTREAM} .
 
 RUN git config --global --add safe.directory '*'
 
+# =============================================================================
+# DEPENDENCY MANAGEMENT
+# Update all packages to latest versions and patch CVEs
+# =============================================================================
+RUN cp go.mod go.mod.tmp && cp go.sum go.sum.tmp && \
+    go get -u ./... && go mod tidy && \
+    echo "=== UPDATED PACKAGES ===" && \
+    diff go.mod.tmp go.mod || true && \
+    rm go.mod.tmp go.sum.tmp
+
 COPY . .
