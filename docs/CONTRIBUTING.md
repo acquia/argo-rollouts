@@ -20,8 +20,8 @@ locally if you wish to make code contributions to Argo Rollouts.
 Argo Rollout additionally uses the following tools
 
 - `golangci-lint` to lint the project.
-- `protoc` and `swagger-codegen` to generate proto related files
-- `yarn` to build the UI
+- `protoc` to generate proto related files. `swagger-codegen` is pinned and run in Docker by `hack/swagger-codegen.sh`, so it does not need to be installed.
+- `pnpm` to build the UI ([install via Corepack](https://nodejs.org/api/corepack.html): `corepack enable`)
 
 Run the following commands to install them:
 
@@ -36,7 +36,7 @@ go get -u github.com/golangci/golangci-lint/cmd/golangci-lint
 Brew users can quickly install the lot:
 
 ```bash
-brew install go kubectl kustomize golangci-lint protobuf swagger-codegen k3d
+brew install go kubectl kustomize golangci-lint protobuf k3d
 ```
 
 Set up environment variables (e.g. is `~/.bashrc`):
@@ -92,8 +92,8 @@ Start and prepare your cluster for e2e tests:
 ```
 k3d cluster create
 kubectl create ns argo-rollouts
-kubectl apply -k manifests/crds
-kubectl apply -f test/e2e/crds
+kubectl apply --server-side -k manifests/crds
+kubectl apply --server-side -f test/e2e/crds
 ```
 
 The rollout controller can be started with the command:
@@ -136,26 +136,30 @@ Available test suites [are the following](https://github.com/argoproj/argo-rollo
 
 If you'd like to run the UI locally, you first need a running Rollouts controller. This can be a locally running controller with a k3d cluster, as described above, or a controller running in a remote Kubernetes cluster.
 
-In order for the local React app to communicate with the controller and Kubernetes API, run the following to open a port forward to the dashboard:
+In order for the local React app to communicate with the controller and Kubernetes API, run the dashboard API server from source:
 
 ```bash
-kubectl argo rollouts dashboard
+go run ./cmd/kubectl-argo-rollouts/main.go dashboard --root-path ''
 ```
 
-Note that you can also build the API server and run this instead,
+The `--root-path ''` flag is required: by default the dashboard serves its API under `/rollouts/api/v1`, but the UI dev server proxies API requests to `http://localhost:3100/api/v1` (see `ui/src/app/webpack.dev.js`), so API calls would fail with 404. The dashboard serves rollouts from the current namespace of your kubeconfig context; pass `-n <namespace>` to use a different one.
+
+Note that you can also use an installed kubectl plugin (`kubectl argo rollouts dashboard --root-path ''`) or build the plugin and run it instead:
 
 ```
 make plugin
-./dist/kubectl-argo-rollouts dashboard
+./dist/kubectl-argo-rollouts dashboard --root-path ''
 ```
 
-In another terminal, run the following to start the UI:
+In another terminal, run the following to start the UI dev server:
 
 ```bash
 cd ui
-yarn install
-yarn start
+pnpm install
+pnpm start
 ```
+
+The UI is now available at [http://localhost:3101](http://localhost:3101) and picks up source changes via hot reload.
 
 ## Getting your feature accepted 
 
