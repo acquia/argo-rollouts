@@ -14,6 +14,10 @@ Core Kubernetes objects lack the fine-grained tools necessary for comprehensive 
 
 Service Meshes fill this missing functionality in Kubernetes. They introduce new concepts and functionality to control the data plane through the use of CRDs and other core Kubernetes resources.
 
+!!! info "No new traffic managers are accepted in the core controller"
+
+    If you want to use a brand new traffic manager you **must** create a [Plugin](plugins.md). Argo Rollouts is moving to a plugin-based architecture where we want to keep the core code stable and minimal and all extensions should come in the form of plugins ([metrics](../../analysis/plugins.md), [traffic](plugins.md), [steps](../canary/plugins.md)). We will only accept minor contributions and fixes for the existing traffic managers that are already part of Argo Rollouts core. 
+
 ## How does Argo Rollouts enable traffic management?
 
 Argo Rollouts enables traffic management by manipulating the Service Mesh resources to match the intent of the Rollout. Argo Rollouts currently supports the following traffic providers:
@@ -23,13 +27,14 @@ Argo Rollouts enables traffic management by manipulating the Service Mesh resour
 - [Apache APISIX](apisix.md)
 - [Google Cloud](google-cloud.md)
 - [Gateway API](plugins.md)
+- [HAProxy Ingress](haproxy.md)
 - [Istio](istio.md)
 - [Kong Ingress](kong.md)
 - [Nginx Ingress Controller](nginx.md)
 - [Service Mesh Interface (SMI)](smi.md)
 - [Traefik Proxy](traefik.md)
 - [Multiple Providers](mixed.md)
-- File a ticket [here](https://github.com/argoproj/argo-rollouts/issues) if you would like another implementation (or thumbs up it if that issue already exists)
+- Create a [Traffic Manager Plugin](plugins.md) if you would like to use another implementation
 
 Regardless of the Service Mesh used, the Rollout object has to set a canary Service and a stable Service in its spec. Here is an example with those fields set:
 
@@ -54,7 +59,7 @@ Since the traffic is controlled independently by the Service Mesh resources, the
 
 ## Traffic Routing with Managed Routes and Route Precedence
 
-**Traffic Router Support: Istio**
+**Traffic Router Support: Istio, Apache APISIX, AWS ALB**
 
 When traffic routing is enabled, Argo Rollouts can add and manage additional routes beyond just controlling the traffic weight
 to the canary. These include header-based and mirror-based routes. When using these routes, you must set route precedence
@@ -83,7 +88,7 @@ spec:
 
 ## Traffic Routing Based on Header Values for Canary
 
-**Traffic Router Support: Istio**
+**Traffic Router Support: Istio, Apache APISIX, AWS ALB, Gateway API (via plugin)**
 
 Argo Rollouts can route all traffic to the canary service based on HTTP request header values.
 Header-based traffic routing is configured using the `setHeaderRoute` step, which contains a list of header matchers.
