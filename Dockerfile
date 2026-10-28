@@ -24,7 +24,7 @@ RUN cd ${GOPATH}/src/dummy && \
 ####################################################################################################
 # UI build stage
 ####################################################################################################
-FROM --platform=$BUILDPLATFORM docker.io/library/node:24 AS argo-rollouts-ui
+FROM --platform=$BUILDPLATFORM docker.io/library/node:26 AS argo-rollouts-ui
 
 WORKDIR /src
 RUN npm install -g corepack@0.34.6 && corepack enable
