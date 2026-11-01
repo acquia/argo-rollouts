@@ -157,13 +157,13 @@ importers:
         version: 5.2.0(react@17.0.2)
       react-scripts:
         specifier: 5.0.1
-        version: 5.0.1(@babel/plugin-syntax-flow@7.29.7(@babel/core@7.29.7))(@babel/plugin-transform-react-jsx@7.29.7(@babel/core@7.29.7))(@types/babel__core@7.20.5)(eslint@8.57.1)(react@17.0.2)(sass@1.107.0)(type-fest@4.41.0)(typescript@5.9.3)(webpack-cli@4.10.0)(yaml@1.10.3)
+        version: 5.0.1(@babel/plugin-syntax-flow@7.29.7(@babel/core@7.29.7))(@babel/plugin-transform-react-jsx@7.29.7(@babel/core@7.29.7))(@types/babel__core@7.20.5)(eslint@8.57.1)(react@17.0.2)(sass@1.107.1)(type-fest@4.41.0)(typescript@5.9.3)(webpack-cli@4.10.0)(yaml@1.10.3)
       sass:
         specifier: ^1.32.8
-        version: 1.107.0
+        version: 1.107.1
       sass-loader:
         specifier: ^10.2.0
-        version: 10.5.2(sass@1.107.0)(webpack@5.112.2)
+        version: 10.5.2(sass@1.107.1)(webpack@5.112.2)
       style-loader:
         specifier: ^1.3.0
         version: 1.3.0(webpack@5.112.2)
@@ -3046,8 +3046,8 @@ packages:
     engines: {node: '>=0.10.0'}
     hasBin: true
 
-  electron-to-chromium@1.5.468:
-    resolution: {integrity: sha512-8XdEp3sIqO+PzmVPxhzqHq/3+yCxp44m27cm2WY1sRn3ZhwKyKmqSi2hx6gEhmnOXmh8NUuYE00z6Onzn5m6DA==}
+  electron-to-chromium@1.5.471:
+    resolution: {integrity: sha512-Lo7jyyneHRYUQYM3WZ2rBEei9FcUIwValFPLifTbr4NTpc6oyUB+nN2rrOtbn3CE5pgz930mYxRJeD+glR7d6Q==}
 
   emittery@0.10.2:
     resolution: {integrity: sha512-aITqOwnLanpHLNXZJENbOgjUBeHocD+xsSJmNrjovKBW5HbSpW3d1pEls7GFQPUWXiwG9+0P4GtHfEqC/4M0Iw==}
@@ -6220,8 +6220,8 @@ packages:
       sass-embedded:
         optional: true
 
-  sass@1.107.0:
-    resolution: {integrity: sha512-+whPilvVNoAD57xvdIPLQT0gXo4RD1lHYw+Uw8zYHlojaeaMDxK14tc0JmEsz/XMns48h3lpypisMP+3E8eHQA==}
+  sass@1.107.1:
+    resolution: {integrity: sha512-aJ1/LvxOOb04YhmiBjzZn3jVwdHKol+OVhoMV6fFl02fF9T3i+5Mg9l/CnzqtM+NX5Jn5o3lAbs/ZJivTCLHfQ==}
     engines: {node: '>=20.19.0'}
     hasBin: true
 
@@ -6795,8 +6795,8 @@ packages:
   tslib@1.14.1:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
 
-  tslib@2.8.1:
-    resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
+  tslib@2.9.1:
+    resolution: {integrity: sha512-a4Ux9VKuIMHsOS7ENbEq6hK2ZGYIT27Rtl0E4eD9KqwxhKiQeMZE/9xb3IdYwWaSOyIBQLExhQgXDTYoiCxnWA==}
 
   tsutils@3.21.0:
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}
@@ -10105,7 +10105,7 @@ snapshots:
     dependencies:
       baseline-browser-mapping: 2.11.34
       caniuse-lite: 1.0.30001820
-      electron-to-chromium: 1.5.468
+      electron-to-chromium: 1.5.471
       node-releases: 2.0.62
       update-browserslist-db: 1.3.4(browserslist@4.29.5)
 
@@ -10168,7 +10168,7 @@ snapshots:
   camel-case@4.1.2:
     dependencies:
       pascal-case: 3.1.2
-      tslib: 2.8.1
+      tslib: 2.9.1
 
   camelcase-css@2.0.1: {}
 
@@ -10786,7 +10786,7 @@ snapshots:
   dot-case@3.0.4:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.8.1
+      tslib: 2.9.1
 
   dotenv-expand@5.1.0: {}
 
@@ -10806,7 +10806,7 @@ snapshots:
     dependencies:
       jake: 10.9.4
 
-  electron-to-chromium@1.5.468: {}
+  electron-to-chromium@1.5.471: {}
 
   emittery@0.10.2: {}
 
@@ -12921,7 +12921,7 @@ snapshots:
 
   lower-case@2.0.2:
     dependencies:
-      tslib: 2.8.1
+      tslib: 2.9.1
 
   lru-cache@5.1.1:
     dependencies:
@@ -13107,7 +13107,7 @@ snapshots:
   no-case@3.0.4:
     dependencies:
       lower-case: 2.0.2
-      tslib: 2.8.1
+      tslib: 2.9.1
 
   node-addon-api@7.1.1:
     optional: true
@@ -13282,7 +13282,7 @@ snapshots:
   param-case@3.0.4:
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.8.1
+      tslib: 2.9.1
 
   parent-module@1.0.1:
     dependencies:
@@ -13302,7 +13302,7 @@ snapshots:
   pascal-case@3.1.2:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.8.1
+      tslib: 2.9.1
 
   path-exists@3.0.0: {}
 
@@ -14419,7 +14419,7 @@ snapshots:
       tiny-invariant: 1.3.3
       tiny-warning: 1.0.3
 
-  react-scripts@5.0.1(@babel/plugin-syntax-flow@7.29.7(@babel/core@7.29.7))(@babel/plugin-transform-react-jsx@7.29.7(@babel/core@7.29.7))(@types/babel__core@7.20.5)(eslint@8.57.1)(react@17.0.2)(sass@1.107.0)(type-fest@4.41.0)(typescript@5.9.3)(webpack-cli@4.10.0)(yaml@1.10.3):
+  react-scripts@5.0.1(@babel/plugin-syntax-flow@7.29.7(@babel/core@7.29.7))(@babel/plugin-transform-react-jsx@7.29.7(@babel/core@7.29.7))(@types/babel__core@7.20.5)(eslint@8.57.1)(react@17.0.2)(sass@1.107.1)(type-fest@4.41.0)(typescript@5.9.3)(webpack-cli@4.10.0)(yaml@1.10.3):
     dependencies:
       '@babel/core': 7.29.7
       '@pmmmwh/react-refresh-webpack-plugin': 0.5.17(react-refresh@0.11.0)(type-fest@4.41.0)(webpack-dev-server@4.15.2)(webpack@5.112.2)
@@ -14459,7 +14459,7 @@ snapshots:
       react-refresh: 0.11.0
       resolve: 1.22.13
       resolve-url-loader: 4.0.0
-      sass-loader: 12.6.0(sass@1.107.0)(webpack@5.112.2)
+      sass-loader: 12.6.0(sass@1.107.1)(webpack@5.112.2)
       semver: 7.8.5
       source-map-loader: 3.0.2(webpack@5.112.2)
       style-loader: 3.3.4(webpack@5.112.2)
@@ -14792,7 +14792,7 @@ snapshots:
 
   sanitize.css@13.0.0: {}
 
-  sass-loader@10.5.2(sass@1.107.0)(webpack@5.112.2):
+  sass-loader@10.5.2(sass@1.107.1)(webpack@5.112.2):
     dependencies:
       klona: 2.0.6
       loader-utils: 2.0.4
@@ -14801,17 +14801,17 @@ snapshots:
       semver: 7.8.5
       webpack: 5.112.2(postcss@8.5.32)(webpack-cli@4.10.0)
     optionalDependencies:
-      sass: 1.107.0
+      sass: 1.107.1
 
-  sass-loader@12.6.0(sass@1.107.0)(webpack@5.112.2):
+  sass-loader@12.6.0(sass@1.107.1)(webpack@5.112.2):
     dependencies:
       klona: 2.0.6
       neo-async: 2.6.2
       webpack: 5.112.2(postcss@8.5.32)(webpack-cli@4.10.0)
     optionalDependencies:
-      sass: 1.107.0
+      sass: 1.107.1
 
-  sass@1.107.0:
+  sass@1.107.1:
     dependencies:
       chokidar: 5.0.0
       immutable: 5.1.9
@@ -15455,7 +15455,7 @@ snapshots:
 
   tslib@1.14.1: {}
 
-  tslib@2.8.1: {}
+  tslib@2.9.1: {}
 
   tsutils@3.21.0(typescript@5.9.3):
     dependencies:
