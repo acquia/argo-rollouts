@@ -12,7 +12,7 @@
         "argo-ui": "git+https://github.com/argoproj/argo-ui.git#5ff344ac9692c14dd108468bd3c020c3c75181cb",
         "classnames": "2.2.6",
         "isomorphic-fetch": "^3.0.0",
-        "moment": "^2.29.4",
+        "moment": "^2.31.0",
         "moment-timezone": "^0.5.33",
         "portable-fetch": "^3.0.0",
         "react": "^17.0.1",
